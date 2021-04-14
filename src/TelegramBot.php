@@ -1,5 +1,5 @@
 <?php
-//2021.04.14.02
+//2021.04.14.03
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -63,6 +63,7 @@ class TelegramBot extends TelegramBot_Constants{
     elseif($Server['message']['chat']['type'] === 'group'):
       $this->Server->Event->Chat->Type = self::Chat_Group;
       $this->Server->Event->Chat->Id = $Server['message']['chat']['id'];
+      $this->Server->Event->Chat->Name = $Server['message']['chat']['title'];
     endif;
   }
 
@@ -152,6 +153,10 @@ class TelegramBot extends TelegramBot_Constants{
 
   public function ChatId():int{
     return $this->Server->Event->Chat->Id;
+  }
+
+  public function ChatName():string{
+    return $this->Server->Event->Chat->Name;
   }
 
   /**
