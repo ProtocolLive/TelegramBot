@@ -1,5 +1,5 @@
 <?php
-//2021.04.13.00
+//2021.04.14.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -68,7 +68,7 @@ class TelegramBot extends TelegramBot_Constants{
   /**
    * @return object|false
    */
-  private function ServerGet($Msg){
+  private function ServerGet(string $Msg){
     $temp = stream_context_create([
       'http' => [
         'ignore_errors' => true,
@@ -279,14 +279,14 @@ class TelegramBot extends TelegramBot_Constants{
   /**
    * @return object|false
    */
-  function ChatGet(int $User){
+  public function ChatGet(int $User){
     return $this->ServerGet('/getChat?chat_id=' . $User);
   }
 
   /**
    * @return object|false
    */
-  function Send($User, string $Msg, ?array $Markup = null){
+  public function Send($User, string $Msg, ?array $Markup = null){
     if($Msg === ''):
       $this->Error = self::Error_SendNoMsg;
       return false;
@@ -304,14 +304,47 @@ class TelegramBot extends TelegramBot_Constants{
   /**
    * @return object|false
    */
-  function SendVoice(int $User, string $File){
+  public function SendVoice(int $User, string $File){
     return $this->ServerGet("/sendVoice?chat_id=$User&voice=$File");
+  }
+
+  /**
+   * @param string $Photo File, FileId or URL
+   * @return object|false
+   */
+  public function SendPhoto(int $UserId, string $Photo){
+    if(file_exists($Photo)):
+      $curl = curl_init();
+      curl_setopt($curl, CURLOPT_URL, $this->Url . '/sendPhoto');
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($curl, CURLOPT_POST, true);
+      curl_setopt($curl, CURLOPT_POSTFIELDS, [
+        'chat_id' => $UserId,
+        'photo' => new CurlFile($Photo)
+      ]);
+      curl_setopt($curl, CURLOPT_INFILESIZE, filesize($Photo));
+      $temp = curl_exec($curl);
+      $temp = json_decode($temp);
+      if($this->Debug):
+        $this->DebugLog('send', $this->Url . '/sendPhoto');
+        $this->DebugLog('send', json_encode($temp, JSON_PRETTY_PRINT));
+      endif;
+      if($temp->ok === false):
+        $this->Error = $temp->error_code;
+        $this->ErrorMsg = $temp->description;
+        return false;
+      else:
+        return $temp->result;
+      endif;
+    else:
+      return $this->ServerGet('/sendPhoto?chat_id=' . $UserId . '&photo=' . $Photo);
+    endif;
   }
 
   /**
    * @return object|false
    */
-  function Forward(int $To, int $From, int $Msg){
+  public function Forward(int $To, int $From, int $Msg){
     return $this->ServerGet("/forwardMessage?chat_id=$To&from_chat_id=$From&message_id=$Msg");
   }
 }
