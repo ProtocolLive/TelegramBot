@@ -1,5 +1,5 @@
 <?php
-//2021.04.14.01
+//2021.04.14.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -62,6 +62,7 @@ class TelegramBot extends TelegramBot_Constants{
       $this->Server->Event->Chat->Type = self::Chat_Private;
     elseif($Server['message']['chat']['type'] === 'group'):
       $this->Server->Event->Chat->Type = self::Chat_Group;
+      $this->Server->Event->Chat->Id = $Server['message']['chat']['id'];
     endif;
   }
 
@@ -91,7 +92,7 @@ class TelegramBot extends TelegramBot_Constants{
     endif;
   }
 
-//---------------------------- Get / Set -----------------------------------------------------
+// ------------------------ Get / Set -----------------------------
 
   /**
    * @return object|false
@@ -107,6 +108,7 @@ class TelegramBot extends TelegramBot_Constants{
     return $this->ServerGet('/setMyCommands?commands=' . json_encode($Cmds));
   }
 
+// ---------------------------- Me --------------------------------
   public function Name():string{
     return $this->Me->first_name;
   }
@@ -131,6 +133,27 @@ class TelegramBot extends TelegramBot_Constants{
     return $this->Me->supports_inline_queries;
   }
 
+// --------------------------- User -------------------------------
+  public function UserId():int{
+    return $this->Server->Event->User->Id;
+  }
+  
+  public function UserName():string{
+    return $this->Server->Event->User->Name;
+  }
+  
+  public function UserLanguage():string{
+    return $this->Server->Event->User->Language;
+  }
+
+  public function Msg():string{
+    return $this->Server->Event->Msg;
+  }
+
+  public function ChatId():int{
+    return $this->Server->Event->Chat->Id;
+  }
+
   /**
    * @return int|false
    */
@@ -141,22 +164,6 @@ class TelegramBot extends TelegramBot_Constants{
     else:
       return $this->Server->Event->Type;
     endif;
-  }
-
-  public function UserId():int{
-    return $this->Server->Event->User->Id;
-  }
-
-  public function UserName():string{
-    return $this->Server->Event->User->Name;
-  }
-
-  public function UserLanguage():string{
-    return $this->Server->Event->User->Language;
-  }
-
-  public function Msg():string{
-    return $this->Server->Event->Msg;
   }
 
   /**
@@ -225,6 +232,7 @@ class TelegramBot extends TelegramBot_Constants{
   public function WebhookGet():bool{
     $Server = file_get_contents('php://input');
     if($Server === ''):
+      $this->Error = self::Error_NoEvent;
       return false;
     endif;
     $Server = json_decode($Server, true);
@@ -272,6 +280,24 @@ class TelegramBot extends TelegramBot_Constants{
       endif;
     endif;
     return true;
+  }
+
+  /**
+   * If message is a command and is for me
+   */
+  public function CommandForMe():bool{
+    if(substr($this->Msg(), 0, 1) === '/'):
+      $pos = strpos($this->Msg(), '@');
+      if($pos === false):
+        return true;
+      elseif(substr($this->Msg(), $pos) === '@' . $this->Me->username):
+        return true;
+      else:
+        return false;
+      endif;
+    else:
+      return false;
+    endif;
   }
 
 //-------------------------------------------------------------------------------------
