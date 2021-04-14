@@ -1,5 +1,5 @@
 <?php
-//2021.04.14.03
+//2021.04.14.04
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -325,7 +325,7 @@ class TelegramBot extends TelegramBot_Constants{
       $this->Error = self::Error_SendMsgTooBig;
       return false;
     endif;
-    $this->SendAction($this->UserId(), TelegramBot::Action_Typing);
+    $this->SendAction($User, TelegramBot::Action_Typing);
     $temp = '/sendMessage?chat_id=' . $User . '&text=' . urlencode($Msg) . '&parse_mode=HTML';
     if($Markup !== null):
       $temp .= '&reply_markup=' . json_encode($Markup);
