@@ -1,5 +1,5 @@
 <?php
-//2021.04.14.00
+//2021.04.14.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -294,6 +294,7 @@ class TelegramBot extends TelegramBot_Constants{
       $this->Error = self::Error_SendMsgTooBig;
       return false;
     endif;
+    $this->SendAction($this->UserId(), TelegramBot::Action_Typing);
     $temp = '/sendMessage?chat_id=' . $User . '&text=' . urlencode($Msg) . '&parse_mode=HTML';
     if($Markup !== null):
       $temp .= '&reply_markup=' . json_encode($Markup);
@@ -313,6 +314,7 @@ class TelegramBot extends TelegramBot_Constants{
    * @return object|false
    */
   public function SendPhoto(int $UserId, string $Photo){
+    $this->SendAction($this->UserId(), TelegramBot::Action_Photo);
     if(file_exists($Photo)):
       $curl = curl_init();
       curl_setopt($curl, CURLOPT_URL, $this->Url . '/sendPhoto');
@@ -345,6 +347,13 @@ class TelegramBot extends TelegramBot_Constants{
    * @return object|false
    */
   public function Forward(int $To, int $From, int $Msg){
-    return $this->ServerGet("/forwardMessage?chat_id=$To&from_chat_id=$From&message_id=$Msg");
+    return $this->ServerGet('/forwardMessage?chat_id=' . $To . '&from_chat_id=' . $From . '&message_id=' . $Msg);
+  }
+
+  /**
+   * @return object|false
+   */
+  public function SendAction(int $User, string $Status){
+    return $this->ServerGet('/sendChatAction?chat_id=' . $User . '&action=' . $Status);
   }
 }
