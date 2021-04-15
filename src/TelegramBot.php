@@ -1,5 +1,5 @@
 <?php
-//2021.04.14.04
+//2021.04.14.05
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -45,6 +45,53 @@ class TelegramBot extends TelegramBot_Constants{
       $param = FILE_TEXT;
     endif;
     file_put_contents($file, $Msg . "\n", $param);
+  }
+
+  private function ServerParse(){
+    if(isset($Server['message'])):
+      if(isset($Server['message']['document'])):
+        $this->Server->Event = self::Event_Document;
+      elseif(isset($Server['message']['photo'])):
+        $this->Server->Event = new FactoryEventImage();
+        $this->Server->Event->Type = self::Event_Image;
+        $this->Server->Event->Id = $Server['message']['message_id'];
+        $this->Server->Event->Miniature = $Server['message']['photo'][0]['file_id'];
+        $this->Server->Event->File = $Server['message']['photo'][1]['file_id'];
+      elseif(isset($Server['message']['text'])):
+        $this->Server->Event = new FactoryEventText();
+        $this->Server->Event->Type = self::Event_Text;
+        $this->Server->Event->Id = $Server['message']['message_id'];
+        $this->Server->Event->Msg = $Server['message']['text'];
+        $this->UserParse($Server);
+        $this->ChatParse($Server);
+      elseif(isset($Server['message']['voice'])):
+        $this->Server->Event = new FactoryEventVoice();
+        $this->Server->Event->Type = self::Event_Voice;
+        $this->Server->Event->Id = $Server['message']['message_id'];
+        $this->Server->Event->File = $Server['message']['voice']['file_id'];
+        $this->UserParse($Server);
+        $this->ChatParse($Server);
+      elseif(isset($Server['my_chat_member'])):
+        $this->Server->Event = new FactoryEventGroupMe();
+        $this->Server->Event->Type = self::Event_GroupMe;
+        if($Server['my_chat_member']['new_chat_member']['status'] === 'member'):
+          $this->Server->Event->Type->Action = self::GroupMe_Add;
+        elseif($Server['my_chat_member']['new_chat_member']['status'] === 'left'):
+          $this->Server->Event->Type->Action = self::GroupMe_Quit;
+        endif;
+        $this->ChatParse($Server);
+      elseif(isset($Server['message']['new_chat_members'])):
+        $this->Server->Event = new FactoryEventGroupUpdate();
+        $this->Server->Event->Type = self::Event_GroupUpdate;
+        $this->Server->Event->Action = self::GroupUpdate_Add;
+        $this->ChatParse($Server);
+      elseif(isset($Server['message']['left_chat_participant'])):
+        $this->Server->Event = new FactoryEventGroupUpdate();
+        $this->Server->Event->Type = self::Event_GroupUpdate;
+        $this->Server->Event->Action = self::GroupUpdate_Quit;
+        $this->ChatParse($Server);
+      endif;
+    endif;
   }
 
   private function UserParse(array $Server):void{
@@ -244,46 +291,7 @@ class TelegramBot extends TelegramBot_Constants{
     if($this->Debug):
       $this->DebugLog('webhook', json_encode($Server, JSON_PRETTY_PRINT));
     endif;
-    if(isset($Server['message'])):
-      if(isset($Server['message']['document'])):
-        $this->Server->Event = self::Event_Document;
-      elseif(isset($Server['message']['photo'])):
-        $this->Server->Event = self::Event_Image;
-      elseif(isset($Server['message']['text'])):
-        $this->Server->Event = new FactoryEventText();
-        $this->Server->Event->Type = self::Event_Text;
-        $this->Server->Event->Id = $Server['message']['message_id'];
-        $this->Server->Event->Msg = $Server['message']['text'];
-        $this->UserParse($Server);
-        $this->ChatParse($Server);
-      elseif(isset($Server['message']['voice'])):
-        $this->Server->Event = new FactoryEventVoice();
-        $this->Server->Event->Type = self::Event_Voice;
-        $this->Server->Event->Id = $Server['message']['message_id'];
-        $this->Server->Event->File = $Server['message']['voice']['file_id'];
-        $this->UserParse($Server);
-        $this->ChatParse($Server);
-      elseif(isset($Server['my_chat_member'])):
-        $this->Server->Event = new FactoryEventGroupMe();
-        $this->Server->Event->Type = self::Event_GroupMe;
-        if($Server['my_chat_member']['new_chat_member']['status'] === 'member'):
-          $this->Server->Event->Type->Action = self::GroupMe_Add;
-        elseif($Server['my_chat_member']['new_chat_member']['status'] === 'left'):
-          $this->Server->Event->Type->Action = self::GroupMe_Quit;
-        endif;
-        $this->ChatParse($Server);
-      elseif(isset($Server['message']['new_chat_members'])):
-        $this->Server->Event = new FactoryEventGroupUpdate();
-        $this->Server->Event->Type = self::Event_GroupUpdate;
-        $this->Server->Event->Action = self::GroupUpdate_Add;
-        $this->ChatParse($Server);
-      elseif(isset($Server['message']['left_chat_participant'])):
-        $this->Server->Event = new FactoryEventGroupUpdate();
-        $this->Server->Event->Type = self::Event_GroupUpdate;
-        $this->Server->Event->Action = self::GroupUpdate_Quit;
-        $this->ChatParse($Server);
-      endif;
-    endif;
+    $this->ServerParse();
     return true;
   }
 
