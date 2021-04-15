@@ -1,5 +1,5 @@
 <?php
-//2021.04.14.05
+//2021.04.14.06
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -19,14 +19,18 @@ class TelegramBot extends TelegramBot_Constants{
     self::Error_SendMsgTooBig => 'The message is bigger than ' . self::MsgSizeLimit,
     self::Error_SendNoMsg => 'No message to send',
     self::Error_NoEvent => 'No event to parse',
-    self::Error_NoMsg => 'No message to get',
+    self::Error_NoEventMsg => 'No message event',
+    self::Error_NoEventDocument => 'No document event',
+    self::Error_NoEventImage => 'No image event',
     self::Error_NoFile => 'No file to get'
   ];
   public const Error_SendMsgTooBig = 1;
   public const Error_SendNoMsg = 2;
   public const Error_NoEvent = 3;
-  public const Error_NoMsg = 4;
-  public const Error_NoFile = 5;
+  public const Error_NoEventMsg = 4;
+  public const Error_NoEventDocument = 5;
+  public const Error_NoEventImage = 6;
+  public const Error_NoFile = 7;
 
   private const MsgSizeLimit = 4096;
 
@@ -47,16 +51,22 @@ class TelegramBot extends TelegramBot_Constants{
     file_put_contents($file, $Msg . "\n", $param);
   }
 
-  private function ServerParse(){
+  private function ServerParse(array $Server){
     if(isset($Server['message'])):
       if(isset($Server['message']['document'])):
-        $this->Server->Event = self::Event_Document;
+        $this->Server->Event = new FactoryEventDocument();
+        $this->Server->Event->Type = self::Event_Document;
+        $this->Server->Event->Id = $Server['message']['message_id'];
+        $this->Server->Event->File = $Server['message']['document']['file_id'];
+        $this->Server->Event->Name = $Server['message']['document']['file_name'];
+        $this->UserParse($Server);
       elseif(isset($Server['message']['photo'])):
         $this->Server->Event = new FactoryEventImage();
         $this->Server->Event->Type = self::Event_Image;
         $this->Server->Event->Id = $Server['message']['message_id'];
         $this->Server->Event->Miniature = $Server['message']['photo'][0]['file_id'];
         $this->Server->Event->File = $Server['message']['photo'][1]['file_id'];
+        $this->UserParse($Server);
       elseif(isset($Server['message']['text'])):
         $this->Server->Event = new FactoryEventText();
         $this->Server->Event->Type = self::Event_Text;
@@ -226,7 +236,7 @@ class TelegramBot extends TelegramBot_Constants{
     or $this->Server->Event->Type === self::Event_Voice):
       return $this->Server->Event->Id;
     else:
-      $this->Error = self::Error_NoMsg;
+      $this->Error = self::Error_NoEventMsg;
       return false;
     endif;
   }
@@ -235,10 +245,36 @@ class TelegramBot extends TelegramBot_Constants{
    * @return string|false
    */
   public function File(){
-    if($this->Server->Event->Type === self::Event_Voice):
+    if($this->Server->Event->Type === self::Event_Voice
+    or $this->Server->Event->Type === self::Event_Document
+    or $this->Server->Event->Type === self::Event_Image):
       return $this->Server->Event->File;
     else:
       $this->Error = self::Error_NoFile;
+      return false;
+    endif;
+  }
+
+  /**
+   * @return string|false
+   */
+  public function Miniature(){
+    if($this->Server->Event->Type === self::Event_Image):
+      return $this->Server->Event->Miniature;
+    else:
+      $this->Error = self::Error_NoEventImage;
+      return false;
+    endif;
+  }
+
+  /**
+   * @return string|false
+   */
+  public function FileName(){
+    if($this->Server->Event->Type === self::Event_Document):
+      return $this->Server->Event->Name;
+    else:
+      $this->Error = self::Error_NoEventDocument;
       return false;
     endif;
   }
@@ -291,7 +327,7 @@ class TelegramBot extends TelegramBot_Constants{
     if($this->Debug):
       $this->DebugLog('webhook', json_encode($Server, JSON_PRETTY_PRINT));
     endif;
-    $this->ServerParse();
+    $this->ServerParse($Server);
     return true;
   }
 
@@ -309,6 +345,42 @@ class TelegramBot extends TelegramBot_Constants{
         return false;
       endif;
     else:
+      return false;
+    endif;
+  }
+
+  /**
+   * @param string $Destination Dir, name and extension
+   */
+  public function DownloadImage(string $FileId, string $Destination):bool{
+    if($this->Server->Event->Type === self::Event_Image):
+      $file = $this->ServerGet('/getFile?file_id=' . $FileId);
+      if($file === false):
+        return false;
+      endif;
+      $content = file_get_contents($this->UrlFiles . '/' . $file->file_path);
+      file_put_contents($Destination, $content);
+      return true;
+    else:
+      $this->Error = self::Error_NoEventImage;
+      return false;
+    endif;
+  }
+
+  /**
+   * @param string $Destination Only the dir
+   */
+  public function DownloadDocument(string $FileId, string $Destination):bool{
+    if($this->Server->Event->Type === self::Event_Document):
+      $file = $this->ServerGet('/getFile?file_id=' . $FileId);
+      if($file === false):
+        return false;
+      endif;
+      $content = file_get_contents($this->UrlFiles . '/' . $file->file_path);
+      file_put_contents($Destination . '/' . $this->FileName(), $content);
+      return true;
+    else:
+      $this->Error = self::Error_NoEventDocument;
       return false;
     endif;
   }
