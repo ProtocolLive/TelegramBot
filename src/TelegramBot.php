@@ -1,5 +1,5 @@
 <?php
-//2021.04.14.06
+//2021.04.15.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -14,8 +14,8 @@ class TelegramBot extends TelegramBot_Constants{
   private bool $Debug = false;
 
   private int $Error = 0;
-  private string $ErrorMsg = '';
   private array $Errors = [
+    0 => '',
     self::Error_SendMsgTooBig => 'The message is bigger than ' . self::MsgSizeLimit,
     self::Error_SendNoMsg => 'No message to send',
     self::Error_NoEvent => 'No event to parse',
@@ -143,7 +143,7 @@ class TelegramBot extends TelegramBot_Constants{
     endif;
     if($temp->ok === false):
       $this->Error = $temp->error_code;
-      $this->ErrorMsg = $temp->description;
+      $this->Errors[0] = $temp->description;
       return false;
     else:
       return $temp->result;
