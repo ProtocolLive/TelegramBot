@@ -1,7 +1,7 @@
 <?php
-//2021.04.14.00
-//Protocol Corporation Ltda.
-//https://github.com/ProtocolLive/TelegramBot
+// 2021.04.15.00
+// Protocol Corporation Ltda.
+// https://github.com/ProtocolLive/TelegramBot
 
 class TelegramBot_Constants{
   public const Event_Text = 1;
@@ -10,6 +10,7 @@ class TelegramBot_Constants{
   public const Event_Document = 4;
   public const Event_GroupMe = 5;
   public const Event_GroupUpdate = 6;
+  public const Event_CallBack = 7;
 
   public const Chat_Private = 1;
   public const Chat_Group = 2;

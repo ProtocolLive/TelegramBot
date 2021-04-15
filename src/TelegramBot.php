@@ -1,5 +1,5 @@
 <?php
-//2021.04.15.02
+//2021.04.15.03
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -87,15 +87,6 @@ class TelegramBot extends TelegramBot_Constants{
         $this->Server->Event->File = $Server['message']['voice']['file_id'];
         $this->UserParse($Server);
         $this->ChatParse($Server);
-      elseif(isset($Server['my_chat_member'])):
-        $this->Server->Event = new FactoryEventGroupMe();
-        $this->Server->Event->Type = self::Event_GroupMe;
-        if($Server['my_chat_member']['new_chat_member']['status'] === 'member'):
-          $this->Server->Event->Type->Action = self::GroupMe_Add;
-        elseif($Server['my_chat_member']['new_chat_member']['status'] === 'left'):
-          $this->Server->Event->Type->Action = self::GroupMe_Quit;
-        endif;
-        $this->ChatParse($Server);
       elseif(isset($Server['message']['new_chat_members'])):
         $this->Server->Event = new FactoryEventGroupUpdate();
         $this->Server->Event->Type = self::Event_GroupUpdate;
@@ -107,17 +98,33 @@ class TelegramBot extends TelegramBot_Constants{
         $this->Server->Event->Action = self::GroupUpdate_Quit;
         $this->ChatParse($Server);
       endif;
+    elseif(isset($Server['my_chat_member'])):
+      $this->Server->Event = new FactoryEventGroupMe();
+      $this->Server->Event->Type = self::Event_GroupMe;
+      if($Server['my_chat_member']['new_chat_member']['status'] === 'member'):
+        $this->Server->Event->Type->Action = self::GroupMe_Add;
+      elseif($Server['my_chat_member']['new_chat_member']['status'] === 'left'):
+        $this->Server->Event->Type->Action = self::GroupMe_Quit;
+      endif;
+      $this->ChatParse($Server);
+    elseif(isset($Server['callback_query'])):
+      $this->Server->Event = new FactoryEventCallback();
+      $this->Server->Event->Type = self::Event_CallBack;
+      $this->Server->Event->Id = $Server['callback_query']['message']['message_id'];
+      $this->Server->Event->Data = $Server['callback_query']['data'];
+      $this->UserParse($Server['callback_query']);
+      $this->ChatParse($Server['callback_query']);
     endif;
   }
 
   private function UserParse(array $Server):void{
     $this->Server->Event->User = new FactoryUser();
-    $this->Server->Event->User->Id = $Server['message']['from']['id'];
-    $this->Server->Event->User->Bot = $Server['message']['from']['is_bot'];
-    $this->Server->Event->User->Name = $Server['message']['from']['first_name'];
-    $this->Server->Event->User->NameLast = $Server['message']['from']['last_name'] ?? null;
-    $this->Server->Event->User->Nick = $Server['message']['from']['username'] ?? null;
-    $this->Server->Event->User->Language = $Server['message']['from']['language_code'];
+    $this->Server->Event->User->Id = $Server['from']['id'];
+    $this->Server->Event->User->Bot = $Server['from']['is_bot'];
+    $this->Server->Event->User->Name = $Server['from']['first_name'];
+    $this->Server->Event->User->NameLast = $Server['from']['last_name'] ?? null;
+    $this->Server->Event->User->Nick = $Server['from']['username'] ?? null;
+    $this->Server->Event->User->Language = $Server['from']['language_code'];
   }
   private function ChatParse(array $Server):void{
     $this->Server->Event->Chat = new FactoryChat();
@@ -240,7 +247,8 @@ class TelegramBot extends TelegramBot_Constants{
    */
   public function MsgId(){
     if($this->Server->Event->Type === self::Event_Text
-    or $this->Server->Event->Type === self::Event_Voice):
+    or $this->Server->Event->Type === self::Event_Voice
+    or $this->Server->Event->Type === self::Event_CallBack):
       return $this->Server->Event->Id;
     else:
       $this->Error = self::Error_NoEventMsg;
@@ -470,5 +478,12 @@ class TelegramBot extends TelegramBot_Constants{
    */
   public function SendAction(int $User, string $Status){
     return $this->ServerGet('/sendChatAction?chat_id=' . $User . '&action=' . $Status);
+  }
+
+  /**
+   * @return object|false
+   */
+  public function EditMarkup(int $Chat, int $Msg, array $Markup){
+    return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $Msg . '&reply_markup=' . json_encode($Markup));
   }
 }

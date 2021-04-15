@@ -1,5 +1,5 @@
 <?php
-// 2021.04.14.01
+// 2021.04.15.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -46,6 +46,13 @@ class FactoryEventGroupMe{
 class FactoryEventGroupUpdate{
   public int $Type;
   public int $Action;
+}
+
+class FactoryEventCallback{
+  public int $Type;
+  public int $Id;
+  public object $User;
+  public string $Data;
 }
 
 class FactoryUser{
