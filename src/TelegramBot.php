@@ -1,5 +1,5 @@
 <?php
-//2021.04.15.03
+//2021.04.15.04
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -119,12 +119,12 @@ class TelegramBot extends TelegramBot_Constants{
 
   private function UserParse(array $Server):void{
     $this->Server->Event->User = new FactoryUser();
-    $this->Server->Event->User->Id = $Server['from']['id'];
-    $this->Server->Event->User->Bot = $Server['from']['is_bot'];
-    $this->Server->Event->User->Name = $Server['from']['first_name'];
-    $this->Server->Event->User->NameLast = $Server['from']['last_name'] ?? null;
-    $this->Server->Event->User->Nick = $Server['from']['username'] ?? null;
-    $this->Server->Event->User->Language = $Server['from']['language_code'];
+    $this->Server->Event->User->Id = $Server['message']['from']['id'];
+    $this->Server->Event->User->Bot = $Server['message']['from']['is_bot'];
+    $this->Server->Event->User->Name = $Server['message']['from']['first_name'];
+    $this->Server->Event->User->NameLast = $Server['message']['from']['last_name'] ?? null;
+    $this->Server->Event->User->Nick = $Server['message']['from']['username'] ?? null;
+    $this->Server->Event->User->Language = $Server['message']['from']['language_code'];
   }
   private function ChatParse(array $Server):void{
     $this->Server->Event->Chat = new FactoryChat();
