@@ -1,5 +1,5 @@
 <?php
-//2021.04.15.01
+//2021.04.15.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -16,6 +16,9 @@ class TelegramBot extends TelegramBot_Constants{
   private int $Error = 0;
   private array $Errors = [
     0 => '',
+    self::Error_NoSsl => 'Extension OpenSSL not found',
+    self::Error_NoCurl => 'Extension cURL not found',
+    self::Error_NoToken => 'No token',
     self::Error_SendMsgTooBig => 'The message is bigger than ' . self::MsgSizeLimit,
     self::Error_SendNoMsg => 'No message to send',
     self::Error_NoEvent => 'No event to parse',
@@ -24,13 +27,16 @@ class TelegramBot extends TelegramBot_Constants{
     self::Error_NoEventImage => 'No image event',
     self::Error_NoFile => 'No file to get'
   ];
-  public const Error_SendMsgTooBig = 1;
-  public const Error_SendNoMsg = 2;
-  public const Error_NoEvent = 3;
-  public const Error_NoEventMsg = 4;
-  public const Error_NoEventDocument = 5;
-  public const Error_NoEventImage = 6;
-  public const Error_NoFile = 7;
+  public const Error_NoSsl = 1;
+  public const Error_NoCurl = 2;
+  public const Error_NoToken = 3;
+  public const Error_SendMsgTooBig = 4;
+  public const Error_SendNoMsg = 5;
+  public const Error_NoEvent = 6;
+  public const Error_NoEventMsg = 7;
+  public const Error_NoEventDocument = 8;
+  public const Error_NoEventImage = 9;
+  public const Error_NoFile = 10;
 
   private const MsgSizeLimit = 4096;
 
@@ -282,16 +288,13 @@ class TelegramBot extends TelegramBot_Constants{
 
 //--------------------------------------------------------------------------------------
 
-  /**
-   * @param string $Token
-   * @param int $Debug
-   */
   public function __construct(string $Token, bool $Debug = false){
-    if(extension_loaded('openssl') === false or extension_loaded('curl') === false):
-      return false;
-    endif;
-    if($Token === ''):
-      return false;
+    if(extension_loaded('openssl') === false):
+      throw new Exception(self::Error_NoSsl);
+    elseif(extension_loaded('curl') === false):
+      throw new Exception(self::Error_NoCurl);
+    elseif($Token === ''):
+      throw new Exception(self::Error_NoToken);
     endif;
     $this->Url .= $Token;
     $this->UrlFiles .= $Token;
