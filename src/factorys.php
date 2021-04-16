@@ -1,5 +1,5 @@
 <?php
-// 2021.04.15.01
+// 2021.04.15.02
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -14,7 +14,7 @@ class FactoryEventText{
   public object $User;
   public object $Chat;
   public string $Msg;
-  public $Reply;
+  public ?int $Reply;
 }
 
 class FactoryEventVoice{
@@ -60,8 +60,8 @@ class FactoryUser{
   public int $Id = 0;
   public bool $Bot;
   public string $Name;
-  public $NameLast = null;
-  public $NameUser = null;
+  public ?string $NameLast = null;
+  public ?string $NameUser = null;
   public string $Language;
 }
 
@@ -69,6 +69,6 @@ class FactoryChat{
   public int $Type;
   public int $Id;
   public string $Name;
-  public $NameLast = null;
-  public $NameUser = null;
+  public ?string $NameLast = null;
+  public ?string $NameUser = null;
 }

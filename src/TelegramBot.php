@@ -1,5 +1,5 @@
 <?php
-//2021.04.15.07
+//2021.04.15.08
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -141,10 +141,7 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
   }
 
-  /**
-   * @return object|false
-   */
-  private function ServerGet(string $Msg){
+  private function ServerGet(string $Msg):?object{
     $temp = stream_context_create([
       'http' => [
         'ignore_errors' => true,
@@ -161,7 +158,7 @@ class TelegramBot extends TelegramBot_Basics{
     if($temp->ok === false):
       $this->Error = $temp->error_code;
       $this->Errors[0] = $temp->description;
-      return false;
+      return null;
     else:
       return $temp->result;
     endif;
@@ -169,17 +166,11 @@ class TelegramBot extends TelegramBot_Basics{
 
 // ------------------------ Get / Set -----------------------------
 
-  /**
-   * @return object|false
-   */
-  public function CmdGet(){
+  public function CmdGet():?object{
     return $this->ServerGet('/getMyCommands');
   }
 
-  /**
-   * @return object|false
-   */
-  public function CmdSet(array $Cmds){
+  public function CmdSet(array $Cmds):?object{
     return $this->ServerGet('/setMyCommands?commands=' . json_encode($Cmds));
   }
 
@@ -209,6 +200,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
 // --------------------------- User -------------------------------
+
   public function UserId():int{
     return $this->Server->Event->User->Id;
   }
@@ -233,76 +225,61 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->Server->Event->Chat->Name;
   }
 
-  /**
-   * @return int|false
-   */
-  public function Event(){
+  public function Event():?int{
     if(isset($this->Server->Event->Type) === false):
       $this->Error = self::Error_NoEvent;
-      return false;
+      return null;
     else:
       return $this->Server->Event->Type;
     endif;
   }
 
-  /**
-   * @return int|false
-   */
-  public function MsgId(){
+  public function MsgId():?int{
     if($this->Server->Event->Type === self::Event_Text
     or $this->Server->Event->Type === self::Event_Voice
     or $this->Server->Event->Type === self::Event_CallBack):
       return $this->Server->Event->Id;
     else:
       $this->Error = self::Error_NoEventMsg;
-      return false;
+      return null;
     endif;
   }
 
-  public function RepliedMsgId(){
+  public function RepliedMsgId():?int{
     if($this->Server->Event->Type === self::Event_Text):
       return $this->Server->Event->Reply;
     else:
       $this->Error = self::Error_NoRepliedMsg;
-      return false;
+      return null;
     endif;
   }
 
-  /**
-   * @return string|false
-   */
-  public function File(){
+  public function File():?string{
     if($this->Server->Event->Type === self::Event_Voice
     or $this->Server->Event->Type === self::Event_Document
     or $this->Server->Event->Type === self::Event_Image):
       return $this->Server->Event->File;
     else:
       $this->Error = self::Error_NoFile;
-      return false;
+      return null;
     endif;
   }
 
-  /**
-   * @return string|false
-   */
-  public function Miniature(){
+  public function Miniature():?string{
     if($this->Server->Event->Type === self::Event_Image):
       return $this->Server->Event->Miniature;
     else:
       $this->Error = self::Error_NoEventImage;
-      return false;
+      return null;
     endif;
   }
 
-  /**
-   * @return string|false
-   */
-  public function FileName(){
+  public function FileName():?string{
     if($this->Server->Event->Type === self::Event_Document):
       return $this->Server->Event->Name;
     else:
       $this->Error = self::Error_NoEventDocument;
-      return false;
+      return null;
     endif;
   }
 
@@ -323,12 +300,9 @@ class TelegramBot extends TelegramBot_Basics{
     $this->Debug = $Debug;
   }
 
-  /**
-   * @return array|false
-   */
-  function Error(){
+  function Error():?array{
     if($this->Error === 0):
-      return false;
+      return null;
     elseif(array_search($this->Error, $this->Errors) === false):
       return [$this->Error, $this->ErrorMsg];
     else:
@@ -336,7 +310,7 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
   }
 
-  public function WebhookSet():bool{
+  public function WebhookSet():?bool{
     return $this->ServerGet('/setWebhook?url=' . urlencode($_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']));
   }
 
@@ -344,7 +318,7 @@ class TelegramBot extends TelegramBot_Basics{
     $Server = file_get_contents('php://input');
     if($Server === ''):
       $this->Error = self::Error_NoEvent;
-      return false;
+      return null;
     endif;
     $Server = json_decode($Server, true);
     if($this->Debug):
@@ -410,23 +384,17 @@ class TelegramBot extends TelegramBot_Basics{
 
 //-------------------------------------------------------------------------------------
 
-  /**
-   * @return object|false
-   */
-  public function ChatGet(int $User){
+  public function ChatGet(int $User):?object{
     return $this->ServerGet('/getChat?chat_id=' . $User);
   }
 
-  /**
-   * @return object|false
-   */
-  public function Send($User, string $Msg, ?array $Markup = null){
+  public function Send($User, string $Msg, ?array $Markup = null):?object{
     if($Msg === ''):
       $this->Error = self::Error_SendNoMsg;
-      return false;
+      return null;
     elseif(strlen($Msg) > self::MsgSizeLimit):
       $this->Error = self::Error_SendMsgTooBig;
-      return false;
+      return null;
     endif;
     $this->SendAction($User, TelegramBot::Action_Typing);
     $temp = '/sendMessage?chat_id=' . $User . '&text=' . urlencode($Msg) . '&parse_mode=HTML';
@@ -436,18 +404,14 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet($temp);
   }
 
-  /**
-   * @return object|false
-   */
-  public function SendVoice(int $User, string $File){
+  public function SendVoice(int $User, string $File):?object{
     return $this->ServerGet("/sendVoice?chat_id=$User&voice=$File");
   }
 
   /**
    * @param string $Photo File, FileId or URL
-   * @return object|false
    */
-  public function SendPhoto(int $UserId, string $Photo){
+  public function SendPhoto(int $UserId, string $Photo):?object{
     $this->SendAction($this->UserId(), TelegramBot::Action_Photo);
     if(file_exists($Photo)):
       $curl = curl_init();
@@ -477,24 +441,15 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
   }
 
-  /**
-   * @return object|false
-   */
-  public function Forward(int $To, int $From, int $Msg){
+  public function Forward(int $To, int $From, int $Msg):?object{
     return $this->ServerGet('/forwardMessage?chat_id=' . $To . '&from_chat_id=' . $From . '&message_id=' . $Msg);
   }
 
-  /**
-   * @return object|false
-   */
-  public function SendAction(int $User, string $Status){
+  public function SendAction(int $User, string $Status):?object{
     return $this->ServerGet('/sendChatAction?chat_id=' . $User . '&action=' . $Status);
   }
 
-  /**
-   * @return object|false
-   */
-  public function EditMarkup(int $Chat, int $Msg, array $Markup){
+  public function EditMarkup(int $Chat, int $Msg, array $Markup):?object{
     return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $Msg . '&reply_markup=' . json_encode($Markup));
   }
 }
