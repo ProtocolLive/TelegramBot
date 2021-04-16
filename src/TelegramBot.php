@@ -1,5 +1,5 @@
 <?php
-//2021.04.15.12
+//2021.04.15.13
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -35,7 +35,7 @@ class TelegramBot extends TelegramBot_Basics{
         $this->Server->Event->Type = self::Event_Text;
         $this->Server->Event->Id = $Server['message']['message_id'];
         $this->Server->Event->Msg = $Server['message']['text'];
-        $this->Server->Event->Reply = $Server['reply_to_message']['message_id'];
+        $this->Server->Event->Reply = $Server['reply_to_message']['message_id'] ?? null;
         $this->UserParse($Server);
         $this->ChatParse($Server);
       elseif(isset($Server['message']['voice'])):
