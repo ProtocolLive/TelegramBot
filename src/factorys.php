@@ -1,5 +1,5 @@
 <?php
-// 2021.04.15.00
+// 2021.04.15.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -14,6 +14,7 @@ class FactoryEventText{
   public object $User;
   public object $Chat;
   public string $Msg;
+  public $Reply;
 }
 
 class FactoryEventVoice{

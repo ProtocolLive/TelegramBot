@@ -1,5 +1,5 @@
 <?php
-//2021.04.15.05
+//2021.04.15.06
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -25,7 +25,8 @@ class TelegramBot extends TelegramBot_Constants{
     self::Error_NoEventMsg => 'No message event',
     self::Error_NoEventDocument => 'No document event',
     self::Error_NoEventImage => 'No image event',
-    self::Error_NoFile => 'No file to get'
+    self::Error_NoFile => 'No file to get',
+    self::Error_NoRepliedMsg => 'The message its not a reply'
   ];
   public const Error_NoSsl = 1;
   public const Error_NoCurl = 2;
@@ -37,6 +38,7 @@ class TelegramBot extends TelegramBot_Constants{
   public const Error_NoEventDocument = 8;
   public const Error_NoEventImage = 9;
   public const Error_NoFile = 10;
+  public const Error_NoRepliedMsg = 11;
 
   private const MsgSizeLimit = 4096;
 
@@ -78,6 +80,7 @@ class TelegramBot extends TelegramBot_Constants{
         $this->Server->Event->Type = self::Event_Text;
         $this->Server->Event->Id = $Server['message']['message_id'];
         $this->Server->Event->Msg = $Server['message']['text'];
+        $this->Server->Event->Reply = $Server['reply_to_message']['message_id'];
         $this->UserParse($Server);
         $this->ChatParse($Server);
       elseif(isset($Server['message']['voice'])):
@@ -252,6 +255,15 @@ class TelegramBot extends TelegramBot_Constants{
       return $this->Server->Event->Id;
     else:
       $this->Error = self::Error_NoEventMsg;
+      return false;
+    endif;
+  }
+
+  public function RepliedMsgId(){
+    if($this->Server->Event->Type === self::Event_Text):
+      return $this->Server->Event->Reply;
+    else:
+      $this->Error = self::Error_NoRepliedMsg;
       return false;
     endif;
   }
