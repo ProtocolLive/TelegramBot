@@ -1,5 +1,5 @@
 <?php
-//2021.04.16.05
+//2021.04.16.06
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -333,11 +333,11 @@ class TelegramBot extends TelegramBot_Basics{
 
 //-------------------------------------------------------------------------------------
 
-  public function ChatGet(int $User):?object{
-    return $this->ServerGet('/getChat?chat_id=' . $User);
+  public function ChatGet(int $Chat):?object{
+    return $this->ServerGet('/getChat?chat_id=' . $Chat);
   }
 
-  public function Send(int $User, string $Msg, ?array $Markup = null):?object{
+  public function Send(int $Chat, string $Msg, ?array $Markup = null):?object{
     if($Msg === ''):
       $this->Error = self::Error_SendNoMsg;
       return null;
@@ -345,22 +345,22 @@ class TelegramBot extends TelegramBot_Basics{
       $this->Error = self::Error_SendMsgTooBig;
       return null;
     endif;
-    $this->SendAction($User, TelegramBot::Action_Typing);
-    $temp = '/sendMessage?chat_id=' . $User . '&text=' . urlencode($Msg) . '&parse_mode=HTML';
+    $this->SendAction($Chat, TelegramBot::Action_Typing);
+    $temp = '/sendMessage?chat_id=' . $Chat . '&text=' . urlencode($Msg) . '&parse_mode=HTML';
     if($Markup !== null):
       $temp .= '&reply_markup=' . json_encode($Markup);
     endif;
     return $this->ServerGet($temp);
   }
 
-  public function SendVoice(int $User, string $File):?object{
-    return $this->ServerGet("/sendVoice?chat_id=$User&voice=$File");
+  public function SendVoice(int $Chat, string $File):?object{
+    return $this->ServerGet('/sendVoice?chat_id=' . $Chat . '&voice=' . $File);
   }
 
   /**
    * @param string $Photo File, FileId or URL
    */
-  public function SendPhoto(int $UserId, string $Photo):?object{
+  public function SendPhoto(int $Chat, string $Photo):?object{
     $this->SendAction($this->UserId(), TelegramBot::Action_Photo);
     if(file_exists($Photo)):
       $curl = curl_init();
@@ -368,7 +368,7 @@ class TelegramBot extends TelegramBot_Basics{
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($curl, CURLOPT_POST, true);
       curl_setopt($curl, CURLOPT_POSTFIELDS, [
-        'chat_id' => $UserId,
+        'chat_id' => $Chat,
         'photo' => new CurlFile($Photo)
       ]);
       curl_setopt($curl, CURLOPT_INFILESIZE, filesize($Photo));
@@ -385,7 +385,7 @@ class TelegramBot extends TelegramBot_Basics{
         return $temp->result;
       endif;
     else:
-      return $this->ServerGet('/sendPhoto?chat_id=' . $UserId . '&photo=' . $Photo);
+      return $this->ServerGet('/sendPhoto?chat_id=' . $Chat . '&photo=' . $Photo);
     endif;
   }
 
@@ -397,8 +397,8 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/copyMessage?chat_id=' . $To . '&from_chat_id=' . $From . '&message_id=' . $Msg);
   }
 
-  public function SendAction(int $User, string $Status):?bool{
-    return $this->ServerGet('/sendChatAction?chat_id=' . $User . '&action=' . $Status);
+  public function SendAction(int $Chat, string $Status):?bool{
+    return $this->ServerGet('/sendChatAction?chat_id=' . $Chat . '&action=' . $Status);
   }
 
   public function EditMarkup(int $Chat, int $Msg, array $Markup):?object{
