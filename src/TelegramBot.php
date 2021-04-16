@@ -241,6 +241,15 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
   }
 
+  public function CallbackData():?string{
+    if($this->Server->Event->Type === self::Event_CallBack):
+      return $this->Server->Event->Data;
+    else:
+      $this->Error = self::Error_NoEventCallback;
+      return null;
+    endif;
+  }
+
 //--------------------------------------------------------------------------------------
 
   public function __construct(string $Token, string $SystemDir = __DIR__, bool $Debug = false){

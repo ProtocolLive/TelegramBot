@@ -1,5 +1,5 @@
 <?php
-// 2021.04.16.00
+// 2021.04.16.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -16,6 +16,7 @@ class TelegramBot_Basics{
     self::Error_NoEventMsg => 'No message event',
     self::Error_NoEventDocument => 'No document event',
     self::Error_NoEventImage => 'No image event',
+    self::Error_NoEventCallback => 'No callback event',
     self::Error_NoFile => 'No file to get',
     self::Error_NoRepliedMsg => 'The message its not a reply'
   ];
@@ -59,8 +60,9 @@ class TelegramBot_Basics{
   public const Error_NoEventMsg = 7;
   public const Error_NoEventDocument = 8;
   public const Error_NoEventImage = 9;
-  public const Error_NoFile = 10;
-  public const Error_NoRepliedMsg = 11;
+  public const Error_NoEventCallback = 10;
+  public const Error_NoFile = 12;
+  public const Error_NoRepliedMsg = 13;
 
   protected function CreateDir(string $Dir, int $Perm = 0755, bool $Recursive = true):void{
     if(is_dir($Dir) === false):
