@@ -1,5 +1,5 @@
 <?php
-//2021.04.15.13
+//2021.04.15.14
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -96,7 +96,10 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
   }
 
-  private function ServerGet(string $Msg):?object{
+  /**
+   * @return object|true|null
+   */
+  private function ServerGet(string $Msg){
     $temp = stream_context_create([
       'http' => [
         'ignore_errors' => true,
@@ -400,7 +403,8 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/forwardMessage?chat_id=' . $To . '&from_chat_id=' . $From . '&message_id=' . $Msg);
   }
 
-  public function SendAction(int $User, string $Status):?object{
+
+  public function SendAction(int $User, string $Status):?bool{
     return $this->ServerGet('/sendChatAction?chat_id=' . $User . '&action=' . $Status);
   }
 
