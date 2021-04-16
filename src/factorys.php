@@ -1,14 +1,14 @@
 <?php
-// 2021.04.15.02
+// 2021.04.16.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
-class FactoryServer{
+class TelegramBot_FactoryServer{
   public int $Id = 0;
   public object $Event;
 }
 
-class FactoryEventText{
+class TelegramBot_FactoryEventText{
   public int $Type;
   public int $Id;
   public object $User;
@@ -17,13 +17,13 @@ class FactoryEventText{
   public ?int $Reply;
 }
 
-class FactoryEventVoice{
+class TelegramBot_FactoryEventVoice{
   public int $Type;
   public int $Id;
   public string $File;
 }
 
-class FactoryEventImage{
+class TelegramBot_FactoryEventImage{
   public int $Type;
   public int $Id;
   public object $User;
@@ -31,7 +31,7 @@ class FactoryEventImage{
   public string $Minuature;
 }
 
-class FactoryEventDocument{
+class TelegramBot_FactoryEventDocument{
   public int $Type;
   public int $Id;
   public object $User;
@@ -39,24 +39,24 @@ class FactoryEventDocument{
   public string $Name;
 }
 
-class FactoryEventGroupMe{
+class TelegramBot_FactoryEventGroupMe{
   public int $Type;
   public int $Action;
 }
 
-class FactoryEventGroupUpdate{
+class TelegramBot_FactoryEventGroupUpdate{
   public int $Type;
   public int $Action;
 }
 
-class FactoryEventCallback{
+class TelegramBot_FactoryEventCallback{
   public int $Type;
   public int $Id;
   public object $User;
   public string $Data;
 }
 
-class FactoryUser{
+class TelegramBot_FactoryUser{
   public int $Id = 0;
   public bool $Bot;
   public string $Name;
@@ -65,7 +65,7 @@ class FactoryUser{
   public string $Language;
 }
 
-class FactoryChat{
+class TelegramBot_FactoryChat{
   public int $Type;
   public int $Id;
   public string $Name;

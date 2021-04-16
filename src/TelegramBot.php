@@ -1,5 +1,5 @@
 <?php
-//2021.04.16.02
+//2021.04.16.03
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -17,21 +17,21 @@ class TelegramBot extends TelegramBot_Basics{
   private function ServerParse(array $Server){
     if(isset($Server['message'])):
       if(isset($Server['message']['document'])):
-        $this->Server->Event = new FactoryEventDocument();
+        $this->Server->Event = new TelegramBot_FactoryEventDocument;
         $this->Server->Event->Type = self::Event_Document;
         $this->Server->Event->Id = $Server['message']['message_id'];
         $this->Server->Event->File = $Server['message']['document']['file_id'];
         $this->Server->Event->Name = $Server['message']['document']['file_name'];
         $this->UserParse($Server);
       elseif(isset($Server['message']['photo'])):
-        $this->Server->Event = new FactoryEventImage();
+        $this->Server->Event = new TelegramBot_FactoryEventImage;
         $this->Server->Event->Type = self::Event_Image;
         $this->Server->Event->Id = $Server['message']['message_id'];
         $this->Server->Event->Miniature = $Server['message']['photo'][0]['file_id'];
         $this->Server->Event->File = $Server['message']['photo'][1]['file_id'];
         $this->UserParse($Server);
       elseif(isset($Server['message']['text'])):
-        $this->Server->Event = new FactoryEventText();
+        $this->Server->Event = new TelegramBot_FactoryEventText;
         $this->Server->Event->Type = self::Event_Text;
         $this->Server->Event->Id = $Server['message']['message_id'];
         $this->Server->Event->Msg = $Server['message']['text'];
@@ -39,14 +39,14 @@ class TelegramBot extends TelegramBot_Basics{
         $this->UserParse($Server);
         $this->ChatParse($Server);
       elseif(isset($Server['message']['voice'])):
-        $this->Server->Event = new FactoryEventVoice();
+        $this->Server->Event = new TelegramBot_FactoryEventVoice;
         $this->Server->Event->Type = self::Event_Voice;
         $this->Server->Event->Id = $Server['message']['message_id'];
         $this->Server->Event->File = $Server['message']['voice']['file_id'];
         $this->UserParse($Server);
         $this->ChatParse($Server);
       elseif(isset($Server['message']['new_chat_members'])):
-        $this->Server->Event = new FactoryEventGroupUpdate();
+        $this->Server->Event = new TelegramBot_FactoryEventGroupUpdate;
         $this->Server->Event->Type = self::Event_GroupUpdate;
         $this->Server->Event->Action = self::GroupUpdate_Add;
         $this->ChatParse($Server);
@@ -57,7 +57,7 @@ class TelegramBot extends TelegramBot_Basics{
         $this->ChatParse($Server);
       endif;
     elseif(isset($Server['my_chat_member'])):
-      $this->Server->Event = new FactoryEventGroupMe();
+      $this->Server->Event = new TelegramBot_FactoryEventGroupMe;
       $this->Server->Event->Type = self::Event_GroupMe;
       if($Server['my_chat_member']['new_chat_member']['status'] === 'member'):
         $this->Server->Event->Type->Action = self::GroupMe_Add;
@@ -66,7 +66,7 @@ class TelegramBot extends TelegramBot_Basics{
       endif;
       $this->ChatParse($Server);
     elseif(isset($Server['callback_query'])):
-      $this->Server->Event = new FactoryEventCallback();
+      $this->Server->Event = new TelegramBot_FactoryEventCallback;
       $this->Server->Event->Type = self::Event_CallBack;
       $this->Server->Event->Id = $Server['callback_query']['message']['message_id'];
       $this->Server->Event->Data = $Server['callback_query']['data'];
@@ -76,7 +76,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   private function UserParse(array $Server):void{
-    $this->Server->Event->User = new FactoryUser();
+    $this->Server->Event->User = new TelegramBot_FactoryUser;
     $this->Server->Event->User->Id = $Server['message']['from']['id'];
     $this->Server->Event->User->Bot = $Server['message']['from']['is_bot'];
     $this->Server->Event->User->Name = $Server['message']['from']['first_name'];
@@ -85,7 +85,7 @@ class TelegramBot extends TelegramBot_Basics{
     $this->Server->Event->User->Language = $Server['message']['from']['language_code'];
   }
   private function ChatParse(array $Server):void{
-    $this->Server->Event->Chat = new FactoryChat();
+    $this->Server->Event->Chat = new TelegramBot_FactoryChat;
     if($Server['message']['chat']['type'] === 'private'):
       $this->Server->Event->Chat->Type = self::Chat_Private;
       $this->Server->Event->Chat->Id = $this->Server->Event->User->Id;
@@ -162,11 +162,11 @@ class TelegramBot extends TelegramBot_Basics{
   public function UserId():int{
     return $this->Server->Event->User->Id;
   }
-  
+
   public function UserName():string{
     return $this->Server->Event->User->Name;
   }
-  
+
   public function UserLanguage():string{
     return $this->Server->Event->User->Language;
   }
@@ -254,7 +254,7 @@ class TelegramBot extends TelegramBot_Basics{
     $this->Url .= $Token;
     $this->UrlFiles .= $Token;
     $this->Me = $this->ServerGet('/getMe');
-    $this->Server = new FactoryServer();
+    $this->Server = new TelegramBot_FactoryServer();
     $this->Debug = $Debug;
     $this->SystemDir = $SystemDir;
   }
