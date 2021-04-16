@@ -1,5 +1,5 @@
 <?php
-//2021.04.16.08
+//2021.04.16.09
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -70,7 +70,7 @@ class TelegramBot extends TelegramBot_Basics{
       $this->Server->Event->Type = self::Event_CallBack;
       $this->Server->Event->Id = $Server['callback_query']['message']['message_id'];
       $this->Server->Event->Data = $Server['callback_query']['data'];
-      $this->UserParse($Server['callback_query']);
+      $this->CallbackUserParse($Server);
       $this->ChatParse($Server['callback_query']);
     endif;
   }
@@ -83,6 +83,15 @@ class TelegramBot extends TelegramBot_Basics{
     $this->Server->Event->User->NameLast = $Server['message']['from']['last_name'] ?? null;
     $this->Server->Event->User->Nick = $Server['message']['from']['username'] ?? null;
     $this->Server->Event->User->Language = $Server['message']['from']['language_code'];
+  }
+  private function CallbackUserParse(array $Server):void{
+    $this->Server->Event->User = new TelegramBot_FactoryUser;
+    $this->Server->Event->User->Id = $Server['callback_query']['from']['id'];
+    $this->Server->Event->User->Bot = $Server['callback_query']['from']['is_bot'];
+    $this->Server->Event->User->Name = $Server['callback_query']['from']['first_name'];
+    $this->Server->Event->User->NameLast = $Server['callback_query']['from']['last_name'] ?? null;
+    $this->Server->Event->User->Nick = $Server['callback_query']['from']['username'] ?? null;
+    $this->Server->Event->User->Language = $Server['callback_query']['from']['language_code'];
   }
   private function ChatParse(array $Server):void{
     $this->Server->Event->Chat = new TelegramBot_FactoryChat;
