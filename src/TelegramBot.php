@@ -1,5 +1,5 @@
 <?php
-//2021.04.15.11
+//2021.04.15.12
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -12,7 +12,7 @@ class TelegramBot extends TelegramBot_Basics{
   private string $Url = 'https://api.telegram.org/bot';
   private string $UrlFiles= 'https://api.telegram.org/file/bot';
   private bool $Debug = false;
-  private string $BaseDir;
+  private string $SystemDir;
 
   private function ServerParse(array $Server){
     if(isset($Server['message'])):
@@ -240,7 +240,7 @@ class TelegramBot extends TelegramBot_Basics{
 
 //--------------------------------------------------------------------------------------
 
-  public function __construct(string $Token, string $BaseDir = __DIR__, bool $Debug = false){
+  public function __construct(string $Token, string $SystemDir = __DIR__, bool $Debug = false){
     if(extension_loaded('openssl') === false):
       throw new Exception(self::Error_NoSsl);
     elseif(extension_loaded('curl') === false):
@@ -253,7 +253,7 @@ class TelegramBot extends TelegramBot_Basics{
     $this->Me = $this->ServerGet('/getMe');
     $this->Server = new FactoryServer();
     $this->Debug = $Debug;
-    $this->BaseDir = $BaseDir;
+    $this->SystemDir = $SystemDir;
   }
 
   function Error():?array{
