@@ -1,5 +1,5 @@
 <?php
-//2021.04.15.08
+//2021.04.15.09
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -430,9 +430,8 @@ class TelegramBot extends TelegramBot_Basics{
         $this->DebugLog('send', json_encode($temp, JSON_PRETTY_PRINT));
       endif;
       if($temp->ok === false):
-        $this->Error = $temp->error_code;
-        $this->ErrorMsg = $temp->description;
-        return false;
+        $this->Errors[0] = $temp->description;
+        return null;
       else:
         return $temp->result;
       endif;
