@@ -1,12 +1,12 @@
 <?php
-//2021.04.15.06
+//2021.04.15.07
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
-require(__DIR__ . '/constants.php');
+require(__DIR__ . '/basics.php');
 require(__DIR__ . '/factorys.php');
 
-class TelegramBot extends TelegramBot_Constants{
+class TelegramBot extends TelegramBot_Basics{
   private object $Me;
   private object $Server;
   private string $Url = 'https://api.telegram.org/bot';

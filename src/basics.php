@@ -1,9 +1,9 @@
 <?php
-// 2021.04.15.00
+// 2021.04.15.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
-class TelegramBot_Constants{
+class TelegramBot_Basics{
   public const Event_Text = 1;
   public const Event_Voice = 2;
   public const Event_Image = 3;
