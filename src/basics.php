@@ -1,5 +1,5 @@
 <?php
-// 2021.04.16.01
+// 2021.04.16.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -49,22 +49,6 @@ class TelegramBot_Basics{
   public const Action_Voice = 'upload_voice';
   public const Action_Doc = 'upload_document';
   public const Action_Gps = 'find_location';
-  
-  public const Entity_Mention = 'mention';
-  public const Entity_Hashtag = 'hashtag';
-  public const Entity_Cashtag = 'cashtag';
-  public const Entity_BotCommand = 'bot_command';
-  public const Entity_Url = 'url';
-  public const Entity_Email = 'email';
-  public const Entity_Phone = 'phone_number';
-  public const Entity_Bold = 'bold';
-  public const Entity_italic = 'italic';
-  public const Entity_Underline = 'underline';
-  public const Entity_Striked = 'strikethrough';
-  public const Entity_CodeString = 'code';
-  public const Entity_CodeBlock = 'pre';
-  public const Entity_Link = 'text_link';
-  public const Entity_MentionNoNick = 'text_mention';
 
   public const Error_NoSsl = 1;
   public const Error_NoCurl = 2;
