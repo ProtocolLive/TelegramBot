@@ -1,5 +1,5 @@
 <?php
-//2021.04.16.03
+//2021.04.16.04
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -391,6 +391,10 @@ class TelegramBot extends TelegramBot_Basics{
 
   public function Forward(int $To, int $From, int $Msg):?object{
     return $this->ServerGet('/forwardMessage?chat_id=' . $To . '&from_chat_id=' . $From . '&message_id=' . $Msg);
+  }
+
+  public function Copy(int $To, int $From, int $Msg):?object{
+    return $this->ServerGet('/copyMessage?chat_id=' . $To . '&from_chat_id=' . $From . '&message_id=' . $Msg);
   }
 
   public function SendAction(int $User, string $Status):?bool{
