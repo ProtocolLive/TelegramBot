@@ -1,5 +1,5 @@
 <?php
-// 2021.04.15.01
+// 2021.04.16.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -76,5 +76,15 @@ class TelegramBot_Basics{
       $param = FILE_TEXT;
     endif;
     file_put_contents($File, $Msg . "\n", $param);
+  }
+
+  protected function Error():?array{
+    if($this->Error === 0):
+      return null;
+    elseif(array_search($this->Error, $this->Errors) === false):
+      return [$this->Error, $this->ErrorMsg];
+    else:
+      return [$this->Error, $this->Errors[$this->Error]];
+    endif;
   }
 }

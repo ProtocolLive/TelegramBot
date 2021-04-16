@@ -1,5 +1,5 @@
 <?php
-//2021.04.16.00
+//2021.04.16.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -259,16 +259,6 @@ class TelegramBot extends TelegramBot_Basics{
     $this->SystemDir = $SystemDir;
   }
 
-  function Error():?array{
-    if($this->Error === 0):
-      return null;
-    elseif(array_search($this->Error, $this->Errors) === false):
-      return [$this->Error, $this->ErrorMsg];
-    else:
-      return [$this->Error, $this->Errors[$this->Error]];
-    endif;
-  }
-
   public function WebhookSet():?bool{
     return $this->ServerGet('/setWebhook?url=' . urlencode($_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']));
   }
@@ -402,7 +392,6 @@ class TelegramBot extends TelegramBot_Basics{
   public function Forward(int $To, int $From, int $Msg):?object{
     return $this->ServerGet('/forwardMessage?chat_id=' . $To . '&from_chat_id=' . $From . '&message_id=' . $Msg);
   }
-
 
   public function SendAction(int $User, string $Status):?bool{
     return $this->ServerGet('/sendChatAction?chat_id=' . $User . '&action=' . $Status);
