@@ -1,5 +1,5 @@
 <?php
-//2021.04.16.07
+//2021.04.16.08
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -51,7 +51,7 @@ class TelegramBot extends TelegramBot_Basics{
         $this->Server->Event->Action = self::GroupUpdate_Add;
         $this->ChatParse($Server);
       elseif(isset($Server['message']['left_chat_participant'])):
-        $this->Server->Event = new FactoryEventGroupUpdate();
+        $this->Server->Event = new TelegramBot_FactoryEventGroupUpdate;
         $this->Server->Event->Type = self::Event_GroupUpdate;
         $this->Server->Event->Action = self::GroupUpdate_Quit;
         $this->ChatParse($Server);
