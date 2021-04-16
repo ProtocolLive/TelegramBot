@@ -1,5 +1,5 @@
 <?php
-//2021.04.16.01
+//2021.04.16.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -298,36 +298,36 @@ class TelegramBot extends TelegramBot_Basics{
   /**
    * @param string $Destination Dir, name and extension
    */
-  public function DownloadImage(string $FileId, string $Destination):bool{
+  public function DownloadImage(string $FileId, string $Destination):?bool{
     if($this->Server->Event->Type === self::Event_Image):
       $file = $this->ServerGet('/getFile?file_id=' . $FileId);
       if($file === false):
-        return false;
+        return null;
       endif;
       $content = file_get_contents($this->UrlFiles . '/' . $file->file_path);
       file_put_contents($Destination, $content);
       return true;
     else:
       $this->Error = self::Error_NoEventImage;
-      return false;
+      return null;
     endif;
   }
 
   /**
    * @param string $Destination Only the dir
    */
-  public function DownloadDocument(string $FileId, string $Destination):bool{
+  public function DownloadDocument(string $FileId, string $Destination):?bool{
     if($this->Server->Event->Type === self::Event_Document):
       $file = $this->ServerGet('/getFile?file_id=' . $FileId);
       if($file === false):
-        return false;
+        return null;
       endif;
       $content = file_get_contents($this->UrlFiles . '/' . $file->file_path);
       file_put_contents($Destination . '/' . $this->FileName(), $content);
       return true;
     else:
       $this->Error = self::Error_NoEventDocument;
-      return false;
+      return null;
     endif;
   }
 
