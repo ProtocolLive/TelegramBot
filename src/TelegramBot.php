@@ -1,5 +1,5 @@
 <?php
-//2021.04.16.04
+//2021.04.16.05
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -337,7 +337,7 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/getChat?chat_id=' . $User);
   }
 
-  public function Send($User, string $Msg, ?array $Markup = null):?object{
+  public function Send(int $User, string $Msg, ?array $Markup = null):?object{
     if($Msg === ''):
       $this->Error = self::Error_SendNoMsg;
       return null;
