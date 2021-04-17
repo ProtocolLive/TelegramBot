@@ -1,5 +1,5 @@
 <?php
-//2021.04.17.02
+//2021.04.17.03
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -294,6 +294,10 @@ class TelegramBot extends TelegramBot_Basics{
 
   public function WebhookSet():?bool{
     return $this->ServerGet('/setWebhook?url=' . urlencode($_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']));
+  }
+
+  public function WebhookDel():?bool{
+    return $this->ServerGet('/deleteWebhook');
   }
 
   public function WebhookGet():?bool{
