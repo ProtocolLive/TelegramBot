@@ -1,5 +1,5 @@
 <?php
-//2021.04.17.04
+//2021.04.17.05
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -312,6 +312,19 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
     $this->ServerParse($Server);
     return true;
+  }
+
+  public function UpdatesGet(int $Start = 0, int $Limit = 100):?int{
+    $Server = $this->ServerGet('/getUpdates?offset=' . $Start . '&limit=' . $Limit, true);
+    if($Server === null):
+      return null;
+    else:
+      foreach($Server as $update):
+        $this->ServerParse($update);
+        $last = $update['update_id'];
+      endforeach;
+      return $last ?? null;
+    endif;
   }
 
   /**
