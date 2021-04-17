@@ -1,5 +1,5 @@
 <?php
-//2021.04.16.09
+//2021.04.17.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -271,10 +271,12 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
     $this->Url .= $Token;
     $this->UrlFiles .= $Token;
-    $this->Me = $this->ServerGet('/getMe');
-    $this->Server = new TelegramBot_FactoryServer();
     $this->Debug = $Debug;
     $this->SystemDir = $SystemDir;
+    if(($this->Me = $this->ServerGet('/getMe')) === null):
+      throw new Exception(self::Error_NoToken);
+    endif;
+    $this->Server = new TelegramBot_FactoryServer();
   }
 
   public function WebhookSet():?bool{

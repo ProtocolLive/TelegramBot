@@ -1,5 +1,5 @@
 <?php
-// 2021.04.16.01
+// 2021.04.17.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -10,6 +10,7 @@ class TelegramBot_Basics{
     self::Error_NoSsl => 'Extension OpenSSL not found',
     self::Error_NoCurl => 'Extension cURL not found',
     self::Error_NoToken => 'No token',
+    self::Error_NoMe => 'Could not get bot data',
     self::Error_SendMsgTooBig => 'The message is bigger than ' . self::MsgSizeLimit,
     self::Error_SendNoMsg => 'No message to send',
     self::Error_NoEvent => 'No event to parse',
@@ -54,13 +55,14 @@ class TelegramBot_Basics{
   public const Error_NoSsl = 1;
   public const Error_NoCurl = 2;
   public const Error_NoToken = 3;
-  public const Error_SendMsgTooBig = 4;
-  public const Error_SendNoMsg = 5;
-  public const Error_NoEvent = 6;
-  public const Error_NoEventMsg = 7;
-  public const Error_NoEventDocument = 8;
-  public const Error_NoEventImage = 9;
-  public const Error_NoEventCallback = 10;
+  public const Error_NoMe = 4;
+  public const Error_SendMsgTooBig = 5;
+  public const Error_SendNoMsg = 6;
+  public const Error_NoEvent = 7;
+  public const Error_NoEventMsg = 8;
+  public const Error_NoEventDocument = 9;
+  public const Error_NoEventImage = 10;
+  public const Error_NoEventCallback = 11;
   public const Error_NoFile = 12;
   public const Error_NoRepliedMsg = 13;
 
