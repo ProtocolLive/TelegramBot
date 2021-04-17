@@ -1,5 +1,5 @@
 <?php
-//2021.04.17.03
+//2021.04.17.04
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -382,7 +382,6 @@ class TelegramBot extends TelegramBot_Basics{
       $this->Error = self::Error_SendMsgTooBig;
       return null;
     endif;
-    $this->SendAction($Chat, TelegramBot::Action_Typing);
     $temp = '/sendMessage?chat_id=' . $Chat . '&text=' . urlencode($Msg) . '&parse_mode=HTML';
     if($Markup !== null):
       $temp .= '&reply_markup=' . json_encode($Markup);
@@ -398,7 +397,6 @@ class TelegramBot extends TelegramBot_Basics{
    * @param string $Photo File, FileId or URL
    */
   public function SendPhoto(int $Chat, string $Photo):?object{
-    $this->SendAction($this->UserId(), TelegramBot::Action_Photo);
     if(file_exists($Photo)):
       $curl = curl_init();
       curl_setopt($curl, CURLOPT_URL, $this->Url . '/sendPhoto');
