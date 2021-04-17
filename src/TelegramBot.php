@@ -1,5 +1,5 @@
 <?php
-//2021.04.17.01
+//2021.04.17.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -184,8 +184,13 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->Server->Event->User->Name;
   }
 
-  public function UserLanguage():string{
-    return $this->Server->Event->User->Language;
+  public function UserLanguage():?string{
+    if(isset($this->Server->Event)):
+      return $this->Server->Event->User->Language;
+    else:
+      $this->Error = self::Error_NoEvent;
+      return null;
+    endif;
   }
 
   public function Msg():string{
@@ -201,7 +206,9 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function Event():?int{
-    if(isset($this->Server->Event->Type) === false):
+    if(isset($this->Server->Event) and $this->Server->Event->Type > 0):
+      return $this->Server->Event->Type;
+    else:
       $this->Error = self::Error_NoEvent;
       return null;
     else:
@@ -210,9 +217,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function MsgId():?int{
-    if($this->Server->Event->Type === self::Event_Text
-    or $this->Server->Event->Type === self::Event_Voice
-    or $this->Server->Event->Type === self::Event_CallBack):
+    if($this->Server->Event->Id > 0):
       return $this->Server->Event->Id;
     else:
       $this->Error = self::Error_NoEventMsg;
@@ -221,7 +226,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function RepliedMsgId():?int{
-    if($this->Server->Event->Type === self::Event_Text):
+    if($this->Server->Event->Reply !== null):
       return $this->Server->Event->Reply;
     else:
       $this->Error = self::Error_NoRepliedMsg;
