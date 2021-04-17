@@ -1,5 +1,5 @@
 <?php
-//2021.04.17.00
+//2021.04.17.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -106,9 +106,9 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   /**
-   * @return object|true|null
+   * @return array|object|true|null
    */
-  private function ServerGet(string $Msg){
+  private function ServerGet(string $Msg, bool $ReturnArray = false){
     $temp = stream_context_create([
       'http' => [
         'ignore_errors' => true,
@@ -117,17 +117,25 @@ class TelegramBot extends TelegramBot_Basics{
       ]
     ]);
     $temp = file_get_contents($this->Url . $Msg, false, $temp);
-    $temp = json_decode($temp);
+    $temp = json_decode($temp, $ReturnArray);
     if($this->Debug):
       $this->DebugLog($this->SystemDir . '/logs/send.log', $this->Url . $Msg);
       $this->DebugLog($this->SystemDir . '/logs/send.log', json_encode($temp, JSON_PRETTY_PRINT));
     endif;
-    if($temp->ok === false):
-      $this->Error = $temp->error_code;
-      $this->Errors[0] = $temp->description;
-      return null;
+    if($ReturnArray):
+      if($temp['ok'] === false):
+        $this->Errors[0] = $temp['description'];
+        return null;
+      else:
+        return $temp['result'];
+      endif;
     else:
-      return $temp->result;
+      if($temp->ok === false):
+        $this->Errors[0] = $temp->description;
+        return null;
+      else:
+        return $temp->result;
+      endif;
     endif;
   }
 
