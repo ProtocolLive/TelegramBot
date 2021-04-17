@@ -1,5 +1,5 @@
 <?php
-//2021.04.17.05
+//2021.04.17.06
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -211,8 +211,6 @@ class TelegramBot extends TelegramBot_Basics{
     else:
       $this->Error = self::Error_NoEvent;
       return null;
-    else:
-      return $this->Server->Event->Type;
     endif;
   }
 
