@@ -1,5 +1,5 @@
 <?php
-// 2021.04.17.00
+// 2021.04.18.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -22,7 +22,7 @@ class TelegramBot_Basics{
     self::Error_NoRepliedMsg => 'The message its not a reply'
   ];
 
-  protected const MsgSizeLimit = 4096;
+  public const MsgSizeLimit = 4096;
 
   public const Event_Text = 1;
   public const Event_Voice = 2;
