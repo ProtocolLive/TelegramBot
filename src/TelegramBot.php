@@ -1,5 +1,5 @@
 <?php
-//2021.04.20.00
+//2021.04.20.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -274,11 +274,11 @@ class TelegramBot extends TelegramBot_Basics{
 
   public function __construct(string $Token, string $SystemDir = __DIR__, bool $Debug = false){
     if(extension_loaded('openssl') === false):
-      throw new Exception(self::Error_NoSsl);
+      trigger_error($this->Errors[self::Error_NoSsl], E_USER_ERROR);
     elseif(extension_loaded('curl') === false):
-      throw new Exception(self::Error_NoCurl);
+      trigger_error($this->Errors[self::Error_NoCurl], E_USER_ERROR);
     elseif($Token === ''):
-      throw new Exception(self::Error_NoToken);
+      trigger_error($this->Errors[self::Error_NoToken], E_USER_ERROR);
     endif;
     $this->Url .= $Token;
     $this->UrlFiles .= $Token;
