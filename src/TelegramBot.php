@@ -1,5 +1,5 @@
 <?php
-//2021.04.20.01
+//2021.04.21.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -13,6 +13,7 @@ class TelegramBot extends TelegramBot_Basics{
   private string $UrlFiles= 'https://api.telegram.org/file/bot';
   private bool $Debug = false;
   private string $SystemDir;
+  private string $LogsDir;
 
   private function ServerParse(array $Server){
     if(isset($Server['message'])):
@@ -119,8 +120,8 @@ class TelegramBot extends TelegramBot_Basics{
     $temp = file_get_contents($this->Url . $Msg, false, $temp);
     $temp = json_decode($temp, $ReturnArray);
     if($this->Debug):
-      $this->DebugLog($this->SystemDir . '/logs/send.log', $this->Url . $Msg);
-      $this->DebugLog($this->SystemDir . '/logs/send.log', json_encode($temp, JSON_PRETTY_PRINT));
+      $this->DebugLog($this->LogsDir . '/send.log', $this->Url . $Msg);
+      $this->DebugLog($this->LogsDir . '/send.log', json_encode($temp, JSON_PRETTY_PRINT));
     endif;
     if($ReturnArray):
       if($temp['ok'] === false):
@@ -272,7 +273,7 @@ class TelegramBot extends TelegramBot_Basics{
 
 //--------------------------------------------------------------------------------------
 
-  public function __construct(string $Token, string $SystemDir = __DIR__, bool $Debug = false){
+  public function __construct(string $Token, string $SystemDir = __DIR__, string $LogsDir = __DIR__ . '/logs', bool $Debug = false){
     if(extension_loaded('openssl') === false):
       trigger_error($this->Errors[self::Error_NoSsl], E_USER_ERROR);
     elseif(extension_loaded('curl') === false):
@@ -284,6 +285,7 @@ class TelegramBot extends TelegramBot_Basics{
     $this->UrlFiles .= $Token;
     $this->Debug = $Debug;
     $this->SystemDir = $SystemDir;
+    $this->LogsDir = $LogsDir;
     if(($this->Me = $this->ServerGet('/getMe')) === null):
       throw new Exception(self::Error_NoToken);
     endif;
@@ -306,7 +308,7 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
     $Server = json_decode($Server, true);
     if($this->Debug):
-      $this->DebugLog($this->SystemDir . '/logs/webhook.log', json_encode($Server, JSON_PRETTY_PRINT));
+      $this->DebugLog($this->LogsDir . '/webhook.log', json_encode($Server, JSON_PRETTY_PRINT));
     endif;
     $this->ServerParse($Server);
     return true;
@@ -421,8 +423,8 @@ class TelegramBot extends TelegramBot_Basics{
       $temp = curl_exec($curl);
       $temp = json_decode($temp);
       if($this->Debug):
-        $this->DebugLog($this->SystemDir . '/logs/send.log', $this->Url . '/sendPhoto');
-        $this->DebugLog($this->SystemDir . '/logs/send.log', json_encode($temp, JSON_PRETTY_PRINT));
+        $this->DebugLog($this->LogsDir . '/send.log', $this->Url . '/sendPhoto');
+        $this->DebugLog($this->LogsDir . '/send.log', json_encode($temp, JSON_PRETTY_PRINT));
       endif;
       if($temp->ok === false):
         $this->Errors[0] = $temp->description;
