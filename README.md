@@ -1,4 +1,4 @@
-![Logo](https://raw.githubusercontent.com/ProtocolLive/TelegramBotLibrary/main/doc/image.png)
+![Logo](https://repository-images.githubusercontent.com/357628443/39f9dd00-a228-11eb-8ac7-e02b5fd26b0a)
 # Telegram Bot Library
 
 A library to simplify and agregate the Telegram API functions.
