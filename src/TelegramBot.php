@@ -1,5 +1,5 @@
 <?php
-//2021.04.22.05
+//2021.04.22.06
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -152,6 +152,24 @@ class TelegramBot extends TelegramBot_Basics{
       else:
         return $temp->result;
       endif;
+    endif;
+  }
+
+    /**
+   * If message is a command and is for me
+   */
+  private function CommandForMe(string $Cmd):bool{
+    if(substr($Cmd, 0 ,1) === '/'):
+      $pos = strpos($Cmd, '@');
+      if($pos === false):
+        return true;
+      elseif(substr($Cmd, $pos) === '@' . $this->Me->username):
+        return true;
+      else:
+        return false;
+      endif;
+    else:
+      return false;
     endif;
   }
 
@@ -344,24 +362,6 @@ class TelegramBot extends TelegramBot_Basics{
         $last = $update['update_id'];
       endforeach;
       return $last ?? null;
-    endif;
-  }
-
-  /**
-   * If message is a command and is for me
-   */
-  public function CommandForMe():bool{
-    if(substr($this->Msg(), 0, 1) === '/'):
-      $pos = strpos($this->Msg(), '@');
-      if($pos === false):
-        return true;
-      elseif(substr($this->Msg(), $pos) === '@' . $this->Me->username):
-        return true;
-      else:
-        return false;
-      endif;
-    else:
-      return false;
     endif;
   }
 
