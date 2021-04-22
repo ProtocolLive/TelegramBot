@@ -1,5 +1,5 @@
 <?php
-//2021.04.22.01
+//2021.04.22.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -16,7 +16,19 @@ class TelegramBot extends TelegramBot_Basics{
 
   private function ParseServer(array $Server){
     if(isset($Server['message'])):
-      if(isset($Server['message']['document'])):
+      if(isset($Server['message']['text'])):
+        if($this->CommandForMe($Server['message']['text'], 0, 1)):
+          $this->Server->Event = new TelegramBot_FactoryEventCommand;
+          $this->ParseCommand($Server['message']['text']);
+        else:
+          $this->Server->Event = new TelegramBot_FactoryEventText;
+          $this->Server->Event->Reply = $Server['reply_to_message']['message_id'] ?? null;
+        endif;
+        $this->Server->Event->Msg = $Server['message']['text'];
+        $this->Server->Event->Id = $Server['message']['message_id'];
+        $this->ParseUser($Server);
+        $this->ParseChat($Server);
+      elseif(isset($Server['message']['document'])):
         $this->Server->Event = new TelegramBot_FactoryEventDocument;
         $this->Server->Event->Type = self::Event_Document;
         $this->Server->Event->Id = $Server['message']['message_id'];
@@ -29,15 +41,7 @@ class TelegramBot extends TelegramBot_Basics{
         $this->Server->Event->Id = $Server['message']['message_id'];
         $this->Server->Event->Miniature = $Server['message']['photo'][0]['file_id'];
         $this->Server->Event->File = $Server['message']['photo'][1]['file_id'];
-        $this->UserParse($Server);
-      elseif(isset($Server['message']['text'])):
-        $this->Server->Event = new TelegramBot_FactoryEventText;
-        $this->Server->Event->Type = self::Event_Text;
-        $this->Server->Event->Id = $Server['message']['message_id'];
-        $this->Server->Event->Msg = $Server['message']['text'];
-        $this->Server->Event->Reply = $Server['reply_to_message']['message_id'] ?? null;
-        $this->UserParse($Server);
-        $this->ChatParse($Server);
+        $this->ParseUser($Server);
       elseif(isset($Server['message']['voice'])):
         $this->Server->Event = new TelegramBot_FactoryEventVoice;
         $this->Server->Event->Type = self::Event_Voice;
