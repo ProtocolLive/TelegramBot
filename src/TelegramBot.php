@@ -1,5 +1,5 @@
 <?php
-//2021.04.22.09
+//2021.04.22.10
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -466,8 +466,23 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/sendChatAction?chat_id=' . $Chat . '&action=' . $Status);
   }
 
-  public function EditMarkup(int $Chat, int $Msg, array $Markup):?object{
-    return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $Msg . '&reply_markup=' . json_encode($Markup));
+  public function EditText(int $Chat, int $MsgId, string $Msg, array $Markup = null):?object{
+    if($Msg === ''):
+      $this->Error = self::Error_SendNoMsg;
+      return null;
+    elseif(strlen($Msg) > self::MsgSizeLimit):
+      $this->Error = self::Error_SendMsgTooBig;
+      return null;
+    endif;
+    $temp = '/editMessageText?chat_id=' . $Chat . '&message_id=' . $MsgId . '&text=' . urlencode($Msg) . '&parse_mode=HTML';
+    if($Markup !== null):
+      $temp .= '&reply_markup=' . json_encode($Markup);
+    endif;
+    return $this->ServerGet($temp);
+  }
+
+  public function EditMarkup(int $Chat, int $MsgId, array $Markup):?object{
+    return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $MsgId . '&reply_markup=' . json_encode($Markup));
   }
 
   public function SendContact(int $Chat, string $Name, string $Number, ?string $Vcard = null):?object{
