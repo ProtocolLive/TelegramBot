@@ -1,5 +1,5 @@
 <?php
-//2021.04.22.02
+//2021.04.22.03
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -108,6 +108,22 @@ class TelegramBot extends TelegramBot_Basics{
       $this->Server->Event->Chat->Type = self::Chat_Group;
       $this->Server->Event->Chat->Id = $Server['message']['chat']['id'];
       $this->Server->Event->Chat->Name = $Server['message']['chat']['title'];
+    endif;
+  }
+
+  private function ParseCommand(string $Msg):void{
+    $me = '@' . $this->Me->username;
+    $len = strlen($me);
+    if(substr($Msg, -$len) === $me):
+      $Msg = substr($Msg, 0, -$len);
+    endif;
+    $pos = strpos($Msg, ' ');
+    if($pos === false):
+      $this->Server->Event->Command = substr($Msg, 1);
+      $this->Server->Event->Parameters = null;
+    else:
+      $this->Server->Event->Command = substr($Msg, 1, $pos - 1);
+      $this->Server->Event->Parameters = substr($Msg, $pos + 1);
     endif;
   }
 
@@ -277,6 +293,9 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
 //--------------------------------------------------------------------------------------
+  public function Command():?string{
+    return $this->Server->Event->Command;
+  }
 
   public function __construct(string $Token, string $DirSystem = __DIR__, string $DirLogs = __DIR__ . '/logs', bool $Debug = false){
     if(extension_loaded('openssl') === false):
@@ -295,6 +314,8 @@ class TelegramBot extends TelegramBot_Basics{
       throw new Exception(self::Error_NoToken);
     endif;
     $this->Server = new TelegramBot_FactoryServer();
+  public function Parameters():?string{
+    return $this->Server->Event->Parameters;
   }
 
   public function WebhookSet():?bool{
