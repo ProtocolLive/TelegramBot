@@ -1,5 +1,5 @@
 <?php
-//2021.04.22.08
+//2021.04.22.09
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -390,7 +390,7 @@ class TelegramBot extends TelegramBot_Basics{
         return null;
       endif;
       $content = file_get_contents($this->UrlFiles . '/' . $file->file_path);
-      file_put_contents($Destination . '/' . $this->FileName(), $content);
+      file_put_contents($Destination . '/' . $this->Server->Event->Name, $content);
       return true;
     else:
       $this->Error = self::Error_NoEventDocument;
