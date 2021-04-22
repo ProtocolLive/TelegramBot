@@ -1,5 +1,5 @@
 <?php
-//2021.04.21.01
+//2021.04.22.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -12,7 +12,6 @@ class TelegramBot extends TelegramBot_Basics{
   private string $Url = 'https://api.telegram.org/bot';
   private string $UrlFiles= 'https://api.telegram.org/file/bot';
   private bool $Debug = false;
-  private string $DirSystem;
   private string $DirLogs;
 
   private function ServerParse(array $Server){
