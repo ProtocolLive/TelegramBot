@@ -1,5 +1,5 @@
 <?php
-//2021.04.22.06
+//2021.04.22.07
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -173,6 +173,24 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
   }
 
+  public function __construct(string $Token, string $DirLogs = __DIR__ . '/logs', bool $Debug = false){
+    if(extension_loaded('openssl') === false):
+      trigger_error($this->Errors[self::Error_NoSsl], E_USER_ERROR);
+    elseif(extension_loaded('curl') === false):
+      trigger_error($this->Errors[self::Error_NoCurl], E_USER_ERROR);
+    elseif($Token === ''):
+      trigger_error($this->Errors[self::Error_NoToken], E_USER_ERROR);
+    endif;
+    $this->Url .= $Token;
+    $this->UrlFiles .= $Token;
+    $this->Debug = $Debug;
+    $this->DirLogs = $DirLogs;
+    if(($this->Me = $this->ServerGet('/getMe')) === null):
+      throw new Exception(self::Error_NoToken);
+    endif;
+    $this->Server = new TelegramBot_FactoryServer();
+  }
+
 // ------------------------ Get / Set -----------------------------
 
   public function CmdGet():?array{
@@ -309,23 +327,6 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->Server->Event->Command;
   }
 
-  public function __construct(string $Token, string $DirSystem = __DIR__, string $DirLogs = __DIR__ . '/logs', bool $Debug = false){
-    if(extension_loaded('openssl') === false):
-      trigger_error($this->Errors[self::Error_NoSsl], E_USER_ERROR);
-    elseif(extension_loaded('curl') === false):
-      trigger_error($this->Errors[self::Error_NoCurl], E_USER_ERROR);
-    elseif($Token === ''):
-      trigger_error($this->Errors[self::Error_NoToken], E_USER_ERROR);
-    endif;
-    $this->Url .= $Token;
-    $this->UrlFiles .= $Token;
-    $this->Debug = $Debug;
-    $this->DirSystem = $DirSystem;
-    $this->DirLogs = $DirLogs;
-    if(($this->Me = $this->ServerGet('/getMe')) === null):
-      throw new Exception(self::Error_NoToken);
-    endif;
-    $this->Server = new TelegramBot_FactoryServer();
   public function Parameters():?string{
     return $this->Server->Event->Parameters;
   }
