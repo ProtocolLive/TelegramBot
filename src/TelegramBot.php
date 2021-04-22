@@ -1,5 +1,5 @@
 <?php
-//2021.04.22.07
+//2021.04.22.08
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -201,7 +201,6 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/setMyCommands?commands=' . json_encode($Cmds));
   }
 
-// ---------------------------- Me --------------------------------
   public function Name():string{
     return $this->Me->first_name;
   }
@@ -225,8 +224,6 @@ class TelegramBot extends TelegramBot_Basics{
   public function InLine():bool{
     return $this->Me->supports_inline_queries;
   }
-
-// --------------------------- User -------------------------------
 
   public function UserId():int{
     return $this->Server->Event->User->Id;
@@ -258,7 +255,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function Event():?int{
-    if(isset($this->Server->Event) and $this->Server->Event->Type > 0):
+    if(isset($this->Server->Event)):
       return $this->Server->Event->Type;
     else:
       $this->Error = self::Error_NoEvent;
@@ -285,9 +282,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function File():?string{
-    if($this->Server->Event->Type === self::Event_Voice
-    or $this->Server->Event->Type === self::Event_Document
-    or $this->Server->Event->Type === self::Event_Image):
+    if(isset($this->Server->Event->File)):
       return $this->Server->Event->File;
     else:
       $this->Error = self::Error_NoFile;
@@ -314,7 +309,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function CallbackData():?string{
-    if($this->Server->Event->Type === self::Event_CallBack):
+    if($this->Server->Event->Type === self::Event_Callback):
       return $this->Server->Event->Data;
     else:
       $this->Error = self::Error_NoEventCallback;
@@ -322,7 +317,6 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
   }
 
-//--------------------------------------------------------------------------------------
   public function Command():?string{
     return $this->Server->Event->Command;
   }
@@ -330,6 +324,8 @@ class TelegramBot extends TelegramBot_Basics{
   public function Parameters():?string{
     return $this->Server->Event->Parameters;
   }
+
+//--------------------------------------------------------------------------------------
 
   public function WebhookSet():?bool{
     return $this->ServerGet('/setWebhook?url=' . urlencode($_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']));
@@ -408,7 +404,7 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/getChat?chat_id=' . $Chat);
   }
 
-  public function Send(int $Chat, string $Msg, ?array $Markup = null):?object{
+  public function Send(int $Chat, string $Msg, array $Markup = null):?object{
     if($Msg === ''):
       $this->Error = self::Error_SendNoMsg;
       return null;
