@@ -1,5 +1,5 @@
 <?php
-// 2021.04.22.00
+// 2021.04.26.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -24,6 +24,7 @@ class TelegramBot_Basics{
 
   public const MsgSizeLimit = 4096;
 
+  public const Event_Null = 0;
   public const Event_Command = 1;
   public const Event_Text = 2;
   public const Event_Voice = 3;
