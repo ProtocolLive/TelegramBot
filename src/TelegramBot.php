@@ -1,5 +1,5 @@
 <?php
-//2021.04.23.00
+//2021.04.26.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -72,6 +72,10 @@ class TelegramBot extends TelegramBot_Basics{
       $this->Server->Event->Data = $Server['callback_query']['data'];
       $this->ParseCallbackUser($Server);
       $this->ParseChat($Server['callback_query']);
+      $temp = explode(' ', $this->Server->Event->Data);
+      if(isset($temp[1])):
+        parse_str($temp[1], $this->Server->Event->Parameters);
+      endif;
     endif;
   }
 
@@ -321,7 +325,10 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->Server->Event->Command;
   }
 
-  public function Parameters():?string{
+  /**
+   * @return string|array|null
+   */
+  public function Parameters(){
     return $this->Server->Event->Parameters;
   }
 
