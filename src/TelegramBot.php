@@ -1,5 +1,5 @@
 <?php
-//2021.04.27.01
+//2021.04.27.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -129,11 +129,15 @@ class TelegramBot extends TelegramBot_Basics{
   /**
    * @return array|object|true|null
    */
-  private function ServerGet(string $Msg, bool $ReturnArray = false){
+  private function ServerGet(string $Msg, bool $ReturnArray = false, bool $Async = false){
     $curl = curl_init($this->Url . $Msg);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($curl, CURLOPT_USERAGENT, 'Protocol SimpleTelegramBot');
     curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
+    if($Async):
+      curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 1);
+      curl_setopt($curl, CURLOPT_TIMEOUT_MS, 1);
+    endif;
     $temp = json_decode(curl_exec($curl), $ReturnArray);
     if($this->Debug):
       $this->DebugLog($this->DirLogs . '/send.log', $this->Url . $Msg);
@@ -411,7 +415,7 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/getChat?chat_id=' . $Chat);
   }
 
-  public function Send(int $Chat, string $Msg, int $Reply = null, array $Markup = null):?object{
+  public function Send(int $Chat, string $Msg, int $Reply = null, array $Markup = null, bool $Async = false):?object{
     if($Msg === ''):
       $this->Error = self::Error_SendNoMsg;
       return null;
@@ -426,7 +430,7 @@ class TelegramBot extends TelegramBot_Basics{
     if($Markup !== null):
       $temp .= '&reply_markup=' . json_encode($Markup);
     endif;
-    return $this->ServerGet($temp);
+    return $this->ServerGet($temp, false, $Async);
   }
 
   public function SendVoice(int $Chat, string $File):?object{
