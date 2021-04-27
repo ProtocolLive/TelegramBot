@@ -1,5 +1,5 @@
 <?php
-//2021.04.27.00
+//2021.04.27.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -130,15 +130,11 @@ class TelegramBot extends TelegramBot_Basics{
    * @return array|object|true|null
    */
   private function ServerGet(string $Msg, bool $ReturnArray = false){
-    $temp = stream_context_create([
-      'http' => [
-        'ignore_errors' => true,
-        'method' => 'GET',
-        'header' => 'User-Agent: Protocol TelegramBot'
-      ]
-    ]);
-    $temp = file_get_contents($this->Url . $Msg, false, $temp);
-    $temp = json_decode($temp, $ReturnArray);
+    $curl = curl_init($this->Url . $Msg);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_USERAGENT, 'Protocol SimpleTelegramBot');
+    curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
+    $temp = json_decode(curl_exec($curl), $ReturnArray);
     if($this->Debug):
       $this->DebugLog($this->DirLogs . '/send.log', $this->Url . $Msg);
       $this->DebugLog($this->DirLogs . '/send.log', json_encode($temp, JSON_PRETTY_PRINT));
