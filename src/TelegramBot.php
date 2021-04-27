@@ -1,5 +1,5 @@
 <?php
-//2021.04.26.02
+//2021.04.27.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -190,8 +190,11 @@ class TelegramBot extends TelegramBot_Basics{
     $this->UrlFiles .= $Token;
     $this->Debug = $Debug;
     $this->DirLogs = $DirLogs;
-    if(($this->Me = $this->ServerGet('/getMe')) === null):
-      throw new Exception(self::Error_NoToken);
+    if(is_file(__DIR__ . '/db.json')):
+      $this->Me = json_decode(file_get_contents(__DIR__ . '/db.json'));
+    else:
+      $this->Me = $this->ServerGet('/getMe');
+      file_put_contents(__DIR__ . '/db.json', json_encode($this->Me));
     endif;
     $this->Server = new TelegramBot_FactoryServer();
   }
@@ -496,7 +499,7 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $MsgId . '&reply_markup=' . json_encode($Markup));
   }
 
-  public function SendContact(int $Chat, string $Name, string $Number, ?string $Vcard = null):?object{
+  public function SendContact(int $Chat, string $Name, string $Number, string $Vcard = null):?object{
     $temp = '/sendContact?chat_id=' . $Chat . '&phone_number=' . urlencode($Number) . '&first_name=' . urlencode($Name);
     if($Vcard !== null):
       $temp .= '&vcard=' . urlencode($Vcard);
