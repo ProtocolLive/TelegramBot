@@ -1,5 +1,5 @@
 <?php
-// 2021.04.27.00
+// 2021.04.28.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -20,6 +20,7 @@ class TelegramBot_Basics{
     self::Error_NoEventCallback => 'No callback event',
     self::Error_NoFile => 'No file to get',
     self::Error_NoRepliedMsg => 'The message its not a reply',
+    self::Error_NoLanguage => 'User language not available',
     self::Error_SendTimeout => 'Timeout to get response from server. Maybe the request are been done.'
   ];
 
@@ -70,7 +71,8 @@ class TelegramBot_Basics{
   public const Error_NoEventCallback = 11;
   public const Error_NoFile = 12;
   public const Error_NoRepliedMsg = 13;
-  public const Error_SendTimeout = 14;
+  public const Error_NoLanguage = 14;
+  public const Error_SendTimeout = 15;
 
   protected function CreateDir(string $Dir, int $Perm = 0755, bool $Recursive = true):void{
     if(is_dir($Dir) === false):

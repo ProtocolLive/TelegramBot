@@ -1,5 +1,5 @@
 <?php
-//2021.04.27.06
+//2021.04.28.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -250,10 +250,10 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function UserLanguage():?string{
-    if(isset($this->Server->Event)):
+    if(isset($this->Server->Event->User->Language)):
       return $this->Server->Event->User->Language;
     else:
-      $this->Error = self::Error_NoEvent;
+      $this->Error = self::Error_NoLanguage;
       return null;
     endif;
   }
