@@ -1,5 +1,5 @@
 <?php
-//2021.04.27.03
+//2021.04.27.04
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -150,14 +150,16 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
     if($ReturnArray):
       if($temp['ok'] === false):
-        $this->Errors[0] = $temp['description'];
+        $this->Error = self::Error_Custom;
+        $this->Errors[self::Error_Custom] = $temp['description'];
         return null;
       else:
         return $temp['result'];
       endif;
     else:
       if($temp->ok === false):
-        $this->Errors[0] = $temp->description;
+        $this->Error = self::Error_Custom;
+        $this->Errors[self::Error_Custom] = $temp->description;
         return null;
       else:
         return $temp->result;
