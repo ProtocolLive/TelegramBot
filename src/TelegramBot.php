@@ -1,5 +1,5 @@
 <?php
-//2021.04.27.05
+//2021.04.27.06
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -135,11 +135,12 @@ class TelegramBot extends TelegramBot_Basics{
     curl_setopt($curl, CURLOPT_USERAGENT, 'Protocol SimpleTelegramBot');
     curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
     if($Async):
-      curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 1);
-      curl_setopt($curl, CURLOPT_TIMEOUT_MS, 1);
+      curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 500);
+      curl_setopt($curl, CURLOPT_TIMEOUT_MS, 500);
     endif;
     $temp = curl_exec($curl);
     if($temp === false):
+      $this->DebugLog($this->DirLogs . '/debug.log', curl_error($curl));
       $this->Error = self::Error_SendTimeout;
       return null;
     endif;
