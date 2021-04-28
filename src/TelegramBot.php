@@ -1,5 +1,5 @@
 <?php
-//2021.04.27.04
+//2021.04.27.05
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -484,7 +484,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function SendAction(int $Chat, string $Status):?bool{
-    return $this->ServerGet('/sendChatAction?chat_id=' . $Chat . '&action=' . $Status);
+    return $this->ServerGet('/sendChatAction?chat_id=' . $Chat . '&action=' . $Status, false, true);
   }
 
   public function EditText(int $Chat, int $MsgId, string $Msg, array $Markup = null):?object{
@@ -499,11 +499,11 @@ class TelegramBot extends TelegramBot_Basics{
     if($Markup !== null):
       $temp .= '&reply_markup=' . json_encode($Markup);
     endif;
-    return $this->ServerGet($temp);
+    return $this->ServerGet($temp, false, true);
   }
 
   public function EditMarkup(int $Chat, int $MsgId, array $Markup):?object{
-    return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $MsgId . '&reply_markup=' . json_encode($Markup));
+    return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $MsgId . '&reply_markup=' . json_encode($Markup), false, true);
   }
 
   public function SendContact(int $Chat, string $Name, string $Number, string $Vcard = null):?object{
