@@ -1,5 +1,5 @@
 <?php
-// 2021.04.28.00
+// 2021.04.28.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -35,6 +35,7 @@ class TelegramBot_Basics{
   public const Event_Callback = 6;
   public const Event_GroupMe = 7;
   public const Event_GroupUpdate = 8;
+  public const Event_Dice = 9;
 
   public const Chat_Private = 1;
   public const Chat_Group = 2;

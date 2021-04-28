@@ -1,5 +1,5 @@
 <?php
-// 2021.04.26.00
+// 2021.04.28.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -37,6 +37,19 @@ class TelegramBot_FactoryEventText extends TelegramBot_FactoryEvent{
   public ?int $Reply = null;
   public function __construct(){
     $this->Type = TelegramBot_Basics::Event_Text;
+    $this->User = new TelegramBot_FactoryUser;
+    $this->Chat = new TelegramBot_FactoryChat;
+  }
+}
+
+class TelegramBot_FactoryEventDice extends TelegramBot_FactoryEvent{
+  public int $Id = 0;
+  public object $User;
+  public object $Chat;
+  public string $Emoji;
+  public int $Value;
+  public function __construct(){
+    $this->Type = TelegramBot_Basics::Event_Dice;
     $this->User = new TelegramBot_FactoryUser;
     $this->Chat = new TelegramBot_FactoryChat;
   }

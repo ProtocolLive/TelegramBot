@@ -1,5 +1,5 @@
 <?php
-//2021.04.28.00
+//2021.04.28.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -57,6 +57,12 @@ class TelegramBot extends TelegramBot_Basics{
       elseif(isset($Server['message']['message_auto_delete_timer_changed'])):
         $this->Server->Event = new TelegramBot_FactoryEventGroupMe;
         $this->Server->Event->Type = TelegramBot::GroupMe_AutoClean;
+      elseif(isset($Server['message']['dice'])):
+        $this->Server->Event = new TelegramBot_FactoryEventDice;
+        $this->Server->Event->Emoji = $Server['message']['dice']['emoji'];
+        $this->Server->Event->Value = $Server['message']['dice']['value'];
+        $this->ParseUser($Server);
+        $this->ParseChat($Server);
       endif;
     elseif(isset($Server['my_chat_member'])):
       $this->Server->Event = new TelegramBot_FactoryEventGroupMe;
