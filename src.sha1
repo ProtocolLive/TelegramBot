@@ -1,3 +1,4 @@
-253b8084bc02dfcdcb86b8aa99378bf0de80a40a  src/TelegramBot.php
-e695b6f73dad5ab2b1218a8c2fa4d696cb789d25  src/basics.php
+b791f8f8daf913eed0f3e961c36d8c95a9e824cb  src/TelegramBot.php
+c528d6f1380d9e1e16fd5d5a835664cbf3af3891  src/basics.php
+f5eb339bc66e442cc3e88cdad2957db3306aa7ff  src/cacert.pem
 80ade677072ea973e2e5b864014f89f6be10a71f  src/factorys.php
