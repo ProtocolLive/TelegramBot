@@ -1,5 +1,5 @@
 <?php
-// 2021.04.28.01
+// 2021.04.30.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -43,6 +43,7 @@ class TelegramBot_Basics{
   public const GroupMe_Add = 1;
   public const GroupMe_Quit = 2;
   public const GroupMe_AutoClean = 3;
+  public const GroupMe_Admin = 4;
   
   public const GroupUpdate_Add = 1;
   public const GroupUpdate_Quit = 2;
