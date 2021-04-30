@@ -1,5 +1,5 @@
 <?php
-//2021.04.30.01
+//2021.04.30.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -15,8 +15,8 @@ class TelegramBot extends TelegramBot_Basics{
   private string $DirLogs;
 
   private function ParseServer(array $Server){
-    if(($Server['message']['entities']['type'] ?? null) === 'bot_command'
-    and ($Server['message']['entities']['offset'] ?? null) === 0):
+    if(($Server['message']['entities'][0]['type'] ?? null) === 'bot_command'
+    and ($Server['message']['entities'][0]['offset'] ?? null) === 0):
       $this->Server->Event = new TelegramBot_FactoryEventCommand;
       $this->ParseUser($Server['message']);
       $this->ParseChat($Server['message']);
