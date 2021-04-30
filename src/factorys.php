@@ -1,5 +1,5 @@
 <?php
-// 2021.04.30.01
+// 2021.04.30.02
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -9,7 +9,7 @@ class TelegramBot_FactoryUser{
   public string $Name;
   public ?string $NameLast = null;
   public ?string $NameUser = null;
-  public string $Language = null;
+  public ?string $Language = null;
 }
 
 class TelegramBot_FactoryChat{
