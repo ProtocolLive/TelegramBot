@@ -1,5 +1,5 @@
 <?php
-//2021.04.30.00
+//2021.04.30.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -15,55 +15,60 @@ class TelegramBot extends TelegramBot_Basics{
   private string $DirLogs;
 
   private function ParseServer(array $Server){
-    if(isset($Server['message'])):
-      if(isset($Server['message']['text'])):
-        if($this->CommandForMe($Server['message']['text'], 0, 1)):
-          $this->Server->Event = new TelegramBot_FactoryEventCommand;
-          $this->ParseCommand($Server['message']['text']);
-        else:
-          $this->Server->Event = new TelegramBot_FactoryEventText;
-          $this->Server->Event->Reply = $Server['reply_to_message']['message_id'] ?? null;
-        endif;
-        $this->Server->Event->Msg = $Server['message']['text'];
-        $this->Server->Event->Id = $Server['message']['message_id'];
-        $this->ParseUser($Server);
-        $this->ParseChat($Server);
-      elseif(isset($Server['message']['document'])):
-        $this->Server->Event = new TelegramBot_FactoryEventDocument;
-        $this->Server->Event->Id = $Server['message']['message_id'];
-        $this->Server->Event->File = $Server['message']['document']['file_id'];
-        $this->Server->Event->Name = $Server['message']['document']['file_name'];
-        $this->ParseUser($Server);
-      elseif(isset($Server['message']['photo'])):
-        $this->Server->Event = new TelegramBot_FactoryEventImage;
-        $this->Server->Event->Id = $Server['message']['message_id'];
-        $this->Server->Event->Miniature = $Server['message']['photo'][0]['file_id'];
-        $this->Server->Event->File = $Server['message']['photo'][1]['file_id'];
-        $this->ParseUser($Server);
-      elseif(isset($Server['message']['voice'])):
-        $this->Server->Event = new TelegramBot_FactoryEventVoice;
-        $this->Server->Event->Id = $Server['message']['message_id'];
-        $this->Server->Event->File = $Server['message']['voice']['file_id'];
-        $this->ParseUser($Server);
-        $this->ParseChat($Server);
-      elseif(isset($Server['message']['new_chat_members'])):
-        $this->Server->Event = new TelegramBot_FactoryEventGroupUpdate;
-        $this->Server->Event->Action = self::GroupUpdate_Add;
-        $this->ParseChat($Server);
-      elseif(isset($Server['message']['left_chat_participant'])):
-        $this->Server->Event = new TelegramBot_FactoryEventGroupUpdate;
-        $this->Server->Event->Action = self::GroupUpdate_Quit;
-        $this->ParseChat($Server);
-      elseif(isset($Server['message']['message_auto_delete_timer_changed'])):
-        $this->Server->Event = new TelegramBot_FactoryEventGroupMe;
-        $this->Server->Event->Action = TelegramBot::GroupMe_AutoClean;
-      elseif(isset($Server['message']['dice'])):
+    if(($Server['message']['entities']['type'] ?? null) === 'bot_command'
+    and ($Server['message']['entities']['offset'] ?? null) === 0):
+      $this->Server->Event = new TelegramBot_FactoryEventCommand;
+      $this->ParseUser($Server['message']);
+      $this->ParseChat($Server['message']);
+      $this->ParseCommand($Server['message']['text']);
+    elseif(isset($Server['message']['text'])):
+      $this->Server->Event = new TelegramBot_FactoryEventText;
+      $this->Server->Event->Reply = $Server['reply_to_message']['message_id'] ?? null;
+      $this->Server->Event->Msg = $Server['message']['text'];
+      $this->Server->Event->Id = $Server['message']['message_id'];
+      $this->ParseUser($Server['message']);
+      $this->ParseChat($Server['message']);
+    elseif(isset($Server['message']['document'])):
+      $this->Server->Event = new TelegramBot_FactoryEventDocument;
+      $this->Server->Event->Id = $Server['message']['message_id'];
+      $this->Server->Event->File = $Server['message']['document']['file_id'];
+      $this->Server->Event->Name = $Server['message']['document']['file_name'];
+      $this->ParseUser($Server['message']);
+      $this->ParseChat($Server['message']);
+    elseif(isset($Server['message']['photo'])):
+      $this->Server->Event = new TelegramBot_FactoryEventImage;
+      $this->Server->Event->Id = $Server['message']['message_id'];
+      $this->Server->Event->Miniature = $Server['message']['photo'][0]['file_id'];
+      $this->Server->Event->File = $Server['message']['photo'][1]['file_id'];
+      $this->ParseUser($Server['message']);
+      $this->ParseChat($Server['message']);
+    elseif(isset($Server['message']['voice'])):
+      $this->Server->Event = new TelegramBot_FactoryEventVoice;
+      $this->Server->Event->Id = $Server['message']['message_id'];
+      $this->Server->Event->File = $Server['message']['voice']['file_id'];
+      $this->ParseUser($Server['message']);
+      $this->ParseChat($Server['message']);
+    elseif(isset($Server['message']['new_chat_participant'])):
+      $this->Server->Event = new TelegramBot_FactoryEventGroupUpdate;
+      $this->Server->Event->Action = self::GroupUpdate_Add;
+      $this->ParseUser($Server['message']);
+      $this->ParseChat($Server['message']);
+    elseif(isset($Server['message']['left_chat_participant'])):
+      $this->Server->Event = new TelegramBot_FactoryEventGroupUpdate;
+      $this->Server->Event->Action = self::GroupUpdate_Quit;
+      $this->ParseUser($Server['message']);
+      $this->ParseChat($Server['message']);
+    elseif(isset($Server['message']['message_auto_delete_timer_changed'])):
+      $this->Server->Event = new TelegramBot_FactoryEventGroupMe;
+      $this->Server->Event->Action = TelegramBot::GroupMe_AutoClean;
+      $this->ParseUser($Server['message']);
+      $this->ParseChat($Server['message']);
+    elseif(isset($Server['message']['dice'])):
         $this->Server->Event = new TelegramBot_FactoryEventDice;
         $this->Server->Event->Emoji = $Server['message']['dice']['emoji'];
         $this->Server->Event->Value = $Server['message']['dice']['value'];
-        $this->ParseUser($Server);
-        $this->ParseChat($Server);
-      endif;
+        $this->ParseUser($Server['message']);
+        $this->ParseChat($Server['message']);
     elseif(isset($Server['my_chat_member'])):
       $this->Server->Event = new TelegramBot_FactoryEventGroupMe;
       if($Server['my_chat_member']['new_chat_member']['status'] === 'member'):
@@ -71,7 +76,8 @@ class TelegramBot extends TelegramBot_Basics{
       elseif($Server['my_chat_member']['new_chat_member']['status'] === 'left'):
         $this->Server->Event->Type->Action = self::GroupMe_Quit;
       endif;
-      $this->ParseChat($Server);
+      $this->ParseUser($Server['my_chat_member']);
+      $this->ParseChat($Server['my_chat_member']);
     elseif(isset($Server['callback_query'])):
       $this->Server->Event = new TelegramBot_FactoryEventCallback;
       $this->Server->Event->Id = $Server['callback_query']['message']['message_id'];
@@ -80,39 +86,28 @@ class TelegramBot extends TelegramBot_Basics{
       if(isset($temp[1])):
         parse_str($temp[1], $this->Server->Event->Parameters);
       endif;
-      $this->ParseCallbackUser($Server);
-      $this->ParseChat($Server['callback_query']);
-
+      $this->ParseUser($Server['callback_query']);
+      $this->ParseChat($Server['callback_query']['message']);
     endif;
   }
 
   private function ParseUser(array $Server):void{
-    $this->Server->Event->User->Id = $Server['message']['from']['id'];
-    $this->Server->Event->User->Bot = $Server['message']['from']['is_bot'];
-    $this->Server->Event->User->Name = $Server['message']['from']['first_name'];
-    $this->Server->Event->User->NameLast = $Server['message']['from']['last_name'] ?? null;
-    $this->Server->Event->User->Nick = $Server['message']['from']['username'] ?? null;
-    $this->Server->Event->User->Language = $Server['message']['from']['language_code'] ?? null;
-  }
-
-  private function ParseCallbackUser(array $Server):void{
-    $this->Server->Event->User = new TelegramBot_FactoryUser;
-    $this->Server->Event->User->Id = $Server['callback_query']['from']['id'];
-    $this->Server->Event->User->Bot = $Server['callback_query']['from']['is_bot'];
-    $this->Server->Event->User->Name = $Server['callback_query']['from']['first_name'];
-    $this->Server->Event->User->NameLast = $Server['callback_query']['from']['last_name'] ?? null;
-    $this->Server->Event->User->Nick = $Server['callback_query']['from']['username'] ?? null;
-    $this->Server->Event->User->Language = $Server['callback_query']['from']['language_code'];
+    $this->Server->Event->User->Id = $Server['from']['id'];
+    $this->Server->Event->User->Bot = $Server['from']['is_bot'];
+    $this->Server->Event->User->Name = $Server['from']['first_name'];
+    $this->Server->Event->User->NameLast = $Server['from']['last_name'] ?? null;
+    $this->Server->Event->User->Nick = $Server['from']['username'] ?? null;
+    $this->Server->Event->User->Language = $Server['from']['language_code'] ?? null;
   }
 
   private function ParseChat(array $Server):void{
-    if($Server['message']['chat']['type'] === 'private'):
+    if($Server['chat']['type'] === 'private'):
       $this->Server->Event->Chat->Type = self::Chat_Private;
       $this->Server->Event->Chat->Id = $this->Server->Event->User->Id;
-    elseif($Server['message']['chat']['type'] === 'group'):
+    elseif($Server['chat']['type'] === 'group'):
       $this->Server->Event->Chat->Type = self::Chat_Group;
-      $this->Server->Event->Chat->Id = $Server['message']['chat']['id'];
-      $this->Server->Event->Chat->Name = $Server['message']['chat']['title'];
+      $this->Server->Event->Chat->Id = $Server['chat']['id'];
+      $this->Server->Event->Chat->Name = $Server['chat']['title'];
     endif;
   }
 
@@ -171,24 +166,6 @@ class TelegramBot extends TelegramBot_Basics{
       else:
         return $temp->result;
       endif;
-    endif;
-  }
-
-    /**
-   * If message is a command and is for me
-   */
-  private function CommandForMe(string $Cmd):bool{
-    if(substr($Cmd, 0 ,1) === '/'):
-      $pos = strpos($Cmd, '@');
-      if($pos === false):
-        return true;
-      elseif(substr($Cmd, $pos) === '@' . $this->Me->username):
-        return true;
-      else:
-        return false;
-      endif;
-    else:
-      return false;
     endif;
   }
 
