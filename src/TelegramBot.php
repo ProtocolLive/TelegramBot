@@ -1,5 +1,5 @@
 <?php
-//2021.04.30.03
+//2021.05.02.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -77,6 +77,8 @@ class TelegramBot extends TelegramBot_Basics{
         $this->Server->Event->Type->Action = self::GroupMe_Quit;
       elseif($Server['my_chat_member']['new_chat_member']['status'] === 'administrator'):
         $this->Server->Event->Type->Action = self::GroupMe_Admin;
+      elseif($Server['my_chat_member']['new_chat_member']['status'] === 'kicked'):
+        $this->Server->Event->Type->Action = self::GroupMe_Kicked;
       endif;
       $this->ParseUser($Server['my_chat_member']);
       $this->ParseChat($Server['my_chat_member']);
