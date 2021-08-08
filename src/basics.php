@@ -1,5 +1,5 @@
 <?php
-// 2021.05.02.00
+// 2021.08.08.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -76,6 +76,7 @@ class TelegramBot_Basics{
   public const Error_NoRepliedMsg = 13;
   public const Error_NoLanguage = 14;
   public const Error_SendTimeout = 15;
+  public const Error_CurlError = 16;
 
   protected function CreateDir(string $Dir, int $Perm = 0755, bool $Recursive = true):void{
     if(is_dir($Dir) === false):
@@ -88,7 +89,7 @@ class TelegramBot_Basics{
       $param = FILE_APPEND;
     else:
       $this->CreateDir(dirname($File));
-      $param = FILE_TEXT;
+      $param = null;
     endif;
     file_put_contents($File, $Msg . "\n", $param);
   }

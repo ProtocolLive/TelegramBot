@@ -1,5 +1,5 @@
 <?php
-//2021.05.02.01
+//2021.08.08.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -64,11 +64,11 @@ class TelegramBot extends TelegramBot_Basics{
       $this->ParseUser($Server['message']);
       $this->ParseChat($Server['message']);
     elseif(isset($Server['message']['dice'])):
-        $this->Server->Event = new TelegramBot_FactoryEventDice;
-        $this->Server->Event->Emoji = $Server['message']['dice']['emoji'];
-        $this->Server->Event->Value = $Server['message']['dice']['value'];
-        $this->ParseUser($Server['message']);
-        $this->ParseChat($Server['message']);
+      $this->Server->Event = new TelegramBot_FactoryEventDice;
+      $this->Server->Event->Emoji = $Server['message']['dice']['emoji'];
+      $this->Server->Event->Value = $Server['message']['dice']['value'];
+      $this->ParseUser($Server['message']);
+      $this->ParseChat($Server['message']);
     elseif(isset($Server['my_chat_member'])):
       $this->Server->Event = new TelegramBot_FactoryEventGroupMe;
       if($Server['my_chat_member']['new_chat_member']['status'] === 'member'):
@@ -135,7 +135,11 @@ class TelegramBot extends TelegramBot_Basics{
    * @return array|object|true|null
    */
   private function ServerGet(string $Msg, bool $ReturnArray = false, bool $Async = false){
-    $curl = curl_init($this->Url . $Msg);
+    $temp = $this->Url . $Msg;
+    if($this->Debug):
+      $this->DebugLog($this->DirLogs . '/send.log', $temp);
+    endif;
+    $curl = curl_init($temp);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($curl, CURLOPT_USERAGENT, 'Protocol SimpleTelegramBot');
     curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
@@ -145,13 +149,12 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
     $temp = curl_exec($curl);
     if($temp === false):
-      $this->DebugLog($this->DirLogs . '/debug.log', curl_error($curl));
-      $this->Error = self::Error_SendTimeout;
+      $this->DebugLog($this->DirLogs . '/debug.log', 'cURL error #' . curl_errno($curl) . ' ' . curl_error($curl));
+      $this->Error = self::Error_CurlError;
       return null;
     endif;
     $temp = json_decode($temp, $ReturnArray);
     if($this->Debug):
-      $this->DebugLog($this->DirLogs . '/send.log', $this->Url . $Msg);
       $this->DebugLog($this->DirLogs . '/send.log', json_encode($temp, JSON_PRETTY_PRINT));
     endif;
     if($ReturnArray):
@@ -200,8 +203,8 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/getMyCommands');
   }
 
-  public function CmdSet(array $Cmds):?bool{
-    return $this->ServerGet('/setMyCommands?commands=' . json_encode($Cmds));
+  public function CmdSet(array $Cmds){
+    return $this->ServerGet('/setMyCommands?commands=' . urlencode(json_encode($Cmds)));
   }
 
   public function Name():string{
