@@ -1,5 +1,5 @@
 <?php
-//2021.08.08.00
+//2021.08.27.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -431,7 +431,7 @@ class TelegramBot extends TelegramBot_Basics{
       $temp .= '&reply_to_message_id=' . $Reply;
     endif;
     if($Markup !== null):
-      $temp .= '&reply_markup=' . json_encode($Markup);
+      $temp .= '&reply_markup=' . urlencode(json_encode($Markup));
     endif;
     return $this->ServerGet($temp, false, $Async);
   }
