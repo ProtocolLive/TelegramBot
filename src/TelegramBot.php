@@ -1,5 +1,5 @@
 <?php
-//2021.08.27.03
+//2021.09.02.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -14,6 +14,7 @@ class TelegramBot extends TelegramBot_Basics{
   private int $Debug = self::DebugNone;
   private string $DirLogs;
 
+  public const DebugAll = -1;
   public const DebugNone = 0;
   public const DebugWebhook = 1;
   public const DebugSend = 2;
