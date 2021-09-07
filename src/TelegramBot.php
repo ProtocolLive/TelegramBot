@@ -1,5 +1,5 @@
 <?php
-//2021.09.02.01
+//2021.09.06.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -7,7 +7,7 @@ require(__DIR__ . '/basics.php');
 require(__DIR__ . '/factorys.php');
 
 class TelegramBot extends TelegramBot_Basics{
-  private object $Me;
+  private array $Me;
   private object $Server;
   private string $Url = 'https://api.telegram.org/bot';
   private string $UrlFiles= 'https://api.telegram.org/file/bot';
@@ -121,7 +121,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   private function ParseCommand(string $Msg):void{
-    $me = '@' . $this->Me->username;
+    $me = '@' . $this->Me['username'];
     $len = strlen($me);
     if(substr($Msg, -$len) === $me):
       $Msg = substr($Msg, 0, -$len);
@@ -194,7 +194,7 @@ class TelegramBot extends TelegramBot_Basics{
     $this->Debug = $Debug;
     $this->DirLogs = $DirLogs;
     if(is_file(__DIR__ . '/db.json')):
-      $this->Me = json_decode(file_get_contents(__DIR__ . '/db.json'));
+      $this->Me = json_decode(file_get_contents(__DIR__ . '/db.json'), true);
     else:
       $this->Me = $this->ServerGet('/getMe');
       file_put_contents(__DIR__ . '/db.json', json_encode($this->Me));
@@ -213,27 +213,27 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function Name():string{
-    return $this->Me->first_name;
+    return $this->Me['first_name'];
   }
 
   public function Id():int{
-    return $this->Me->id;
+    return $this->Me['id'];
   }
 
   public function Nick():string{
-    return $this->Me->username;
+    return $this->Me['username'];
   }
 
   public function JoinGroups():bool{
-    return $this->Me->can_join_groups;
+    return $this->Me['can_join_groups'];
   }
 
   public function ReadMsg():bool{
-    return $this->Me->can_read_all_group_messages;
+    return $this->Me['can_read_all_group_messages'];
   }
 
   public function InLine():bool{
-    return $this->Me->supports_inline_queries;
+    return $this->Me['supports_inline_queries'];
   }
 
   public function UserId():int{
