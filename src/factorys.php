@@ -1,5 +1,5 @@
 <?php
-// 2021.09.09.01
+// 2021.09.09.02
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -124,7 +124,8 @@ class TelegramBot_FactoryEventGroupUpdate extends TelegramBot_FactoryEvent{
 
 class TelegramBot_FactoryEventInline{
   public object $User;
-  public int $Action = 0;
+  public int $Id = 0;
+  public string $ChatType;
   public ?string $Parameter = null;
   public function __construct(){
     $this->User = new TelegramBot_FactoryUser;

@@ -1,5 +1,5 @@
 <?php
-// 2021.09.09.00
+// 2021.09.09.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -60,6 +60,11 @@ class TelegramBot_Basics{
   public const Action_Voice = 'upload_voice';
   public const Action_Doc = 'upload_document';
   public const Action_Gps = 'find_location';
+
+  public const InlineChat_Sender = 'sender';
+  public const InlineChat_Private = 'private';
+  public const InlineChat_Group = 'group';
+  public const InlineChat_Channel = 'channel';
 
   public const Error_Custom = 0;
   public const Error_NoSsl = 1;

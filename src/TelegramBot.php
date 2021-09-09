@@ -1,5 +1,5 @@
 <?php
-//2021.09.06.00
+//2021.09.09.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -99,8 +99,10 @@ class TelegramBot extends TelegramBot_Basics{
       $this->ParseChat($Server['callback_query']['message']);
     elseif(isset($Server['inline_query'])):
       $this->Server->Event = new TelegramBot_FactoryEventInline;
-      $this->ParseUser($Server['inline_query']);
+      $this->Server->Event->Id = $Server['inline_query']['id'];
       $this->Server->Event->Parameter = $Server['inline_query']['query'];
+      $this->Server->Event->ChatType = $Server['inline_query']['chat_type'];
+      $this->ParseUser($Server['inline_query']);
     endif;
   }
 
