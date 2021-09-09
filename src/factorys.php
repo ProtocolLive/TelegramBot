@@ -121,3 +121,13 @@ class TelegramBot_FactoryEventGroupUpdate extends TelegramBot_FactoryEvent{
     $this->Type = TelegramBot_Basics::Event_GroupUpdate;
   }
 }
+
+class TelegramBot_FactoryEventInline{
+  public object $User;
+  public int $Action = 0;
+  public ?string $Parameter = null;
+  public function __construct(){
+    $this->User = new TelegramBot_FactoryUser;
+    $this->Type = TelegramBot_Basics::Event_Inline;
+  }
+}

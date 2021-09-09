@@ -97,6 +97,10 @@ class TelegramBot extends TelegramBot_Basics{
       endif;
       $this->ParseUser($Server['callback_query']);
       $this->ParseChat($Server['callback_query']['message']);
+    elseif(isset($Server['inline_query'])):
+      $this->Server->Event = new TelegramBot_FactoryEventInline;
+      $this->ParseUser($Server['inline_query']);
+      $this->Server->Event->Parameter = $Server['inline_query']['query'];
     endif;
   }
 
