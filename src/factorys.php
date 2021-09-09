@@ -1,5 +1,5 @@
 <?php
-// 2021.04.30.02
+// 2021.09.09.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -78,7 +78,7 @@ class TelegramBot_FactoryEventVoice extends TelegramBot_FactoryEvent{
 class TelegramBot_FactoryEventImage extends TelegramBot_FactoryEvent{
   public int $Id = 0;
   public string $File;
-  public string $Minuature;
+  public string $Miniature;
   public function __construct(){
     parent::__construct();
     $this->Type = TelegramBot_Basics::Event_Image;
