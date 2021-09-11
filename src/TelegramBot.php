@@ -520,6 +520,10 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $MsgId . '&reply_markup=' . urlencode(json_encode($Markup)), false, $Async);
   }
 
+  public function Delete(int $Chat, int $MsgId):?object{
+    return $this->ServerGet('/deleteMessage?chat_id=' . $Chat . '&message_id=' . $MsgId);
+  }
+
   public function SendContact(int $Chat, string $Name, string $Number, string $Vcard = null):?object{
     $temp = '/sendContact?chat_id=' . $Chat . '&phone_number=' . urlencode($Number) . '&first_name=' . urlencode($Name);
     if($Vcard !== null):
