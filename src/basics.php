@@ -1,5 +1,5 @@
 <?php
-// 2021.09.11.00
+// 2021.09.11.01
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
@@ -98,11 +98,11 @@ class TelegramBot_Basics{
     file_put_contents($File, $Msg . "\n", $param);
   }
 
-  protected function Error():?array{
-    if($this->Error === 0):
+  public function Error():?array{
+    if($this->Error === self::Error_None):
       return null;
-    elseif(array_search($this->Error, $this->Errors) === false):
-      return [$this->Error, $this->ErrorMsg];
+    elseif($this->Error === self::Error_Custom):
+      return [$this->Error, $this->Errors[self::Error_Custom]];
     else:
       return [$this->Error, $this->Errors[$this->Error]];
     endif;
