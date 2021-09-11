@@ -1,5 +1,5 @@
 <?php
-//2021.09.11.03
+//2021.09.11.04
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -282,7 +282,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function MsgId():?int{
-    if($this->Server->Event->Id > 0):
+    if($this->Server->Event->Type === self::Event_Text):
       return $this->Server->Event->Id;
     else:
       $this->Error = self::Error_NoEventMsg;
@@ -300,7 +300,8 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function File():?string{
-    if(isset($this->Server->Event->File)):
+    if($this->Server->Event->Type === self::Event_Document
+    or $this->Server->Event->Type === self::Event_Image):
       return $this->Server->Event->File;
     else:
       $this->Error = self::Error_NoFile;
@@ -336,7 +337,12 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function Command():?string{
-    return $this->Server->Event->Command;
+    if($this->Server->Event->Type === self::Event_Command):
+      return $this->Server->Event->Command;
+    else:
+      $this->Error = self::Error_NoEventCommand;
+      return null;
+    endif;
   }
 
   /**
