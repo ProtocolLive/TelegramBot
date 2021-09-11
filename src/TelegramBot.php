@@ -1,5 +1,5 @@
 <?php
-//2021.09.09.01
+//2021.09.11.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -116,12 +116,11 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   private function ParseChat(array $Server):void{
+    $this->Server->Event->Chat->Id = $Server['chat']['id'];
     if($Server['chat']['type'] === 'private'):
       $this->Server->Event->Chat->Type = self::Chat_Private;
-      $this->Server->Event->Chat->Id = $this->Server->Event->User->Id;
     elseif($Server['chat']['type'] === 'group'):
       $this->Server->Event->Chat->Type = self::Chat_Group;
-      $this->Server->Event->Chat->Id = $Server['chat']['id'];
       $this->Server->Event->Chat->Name = $Server['chat']['title'];
     endif;
   }
