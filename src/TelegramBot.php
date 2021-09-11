@@ -1,5 +1,5 @@
 <?php
-//2021.09.11.04
+//2021.09.11.05
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -291,12 +291,7 @@ class TelegramBot extends TelegramBot_Basics{
   }
 
   public function RepliedMsgId():?int{
-    if($this->Server->Event->Reply !== null):
-      return $this->Server->Event->Reply;
-    else:
-      $this->Error = self::Error_NoRepliedMsg;
-      return null;
-    endif;
+    return $this->Server->Event->Reply;
   }
 
   public function File():?string{
