@@ -1,5 +1,5 @@
 <?php
-//2021.09.11.05
+//2021.09.11.06
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -213,8 +213,12 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/getMyCommands');
   }
 
-  public function CmdSet(array $Cmds){
-    return $this->ServerGet('/setMyCommands?commands=' . urlencode(json_encode($Cmds)));
+  public function CmdSet(array $Cmds, string $Language = null){
+    $temp = '/setMyCommands?commands=' . urlencode(json_encode($Cmds));
+    if($Language !== null):
+      $temp .= '&language_code=' . $Language;
+    endif;
+    return $this->ServerGet($temp);
   }
 
   public function Name():string{
