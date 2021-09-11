@@ -1,5 +1,5 @@
 <?php
-//2021.09.11.00
+//2021.09.11.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -128,13 +128,13 @@ class TelegramBot extends TelegramBot_Basics{
   private function ParseCommand(string $Msg):void{
     $me = '@' . $this->Me['username'];
     $len = strlen($me);
-    if(substr($Msg, -$len) === $me):
+    $temp = explode(' ', $Msg);
+    if(substr($temp[0], -$len) === $me):
       $Msg = substr($Msg, 0, -$len);
     endif;
     $pos = strpos($Msg, ' ');
     if($pos === false):
       $this->Server->Event->Command = substr($Msg, 1);
-      $this->Server->Event->Parameters = null;
     else:
       $this->Server->Event->Command = substr($Msg, 1, $pos - 1);
       $this->Server->Event->Parameters = substr($Msg, $pos + 1);
