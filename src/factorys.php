@@ -1,10 +1,10 @@
 <?php
-// 2021.09.09.02
+// 2021.09.11.00
 // Protocol Corporation Ltda.
 // https://github.com/ProtocolLive/TelegramBot
 
 class TelegramBot_FactoryUser{
-  public int $Id = 0;
+  public int $Id;
   public bool $Bot;
   public string $Name;
   public ?string $NameLast = null;
@@ -13,15 +13,13 @@ class TelegramBot_FactoryUser{
 }
 
 class TelegramBot_FactoryChat{
-  public int $Type = 0;
-  public int $Id = 0;
-  public string $Name;
-  public ?string $NameLast = null;
-  public ?string $NameUser = null;
+  public int $Type;
+  public int $Id;
+  public ?string $Name = null;
 }
 
 abstract class TelegramBot_FactoryEvent{
-  public int $Type = 0;
+  public int $Type;
   public object $User;
   public object $Chat;
   public function __construct(){
@@ -31,12 +29,12 @@ abstract class TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryServer{
-  public int $Id = 0;
+  public int $Id;
   public object $Event;
 }
 
 class TelegramBot_FactoryEventText extends TelegramBot_FactoryEvent{
-  public int $Id = 0;
+  public int $Id;
   public string $Msg;
   public ?int $Reply = null;
   public function __construct(){
@@ -46,7 +44,7 @@ class TelegramBot_FactoryEventText extends TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryEventDice extends TelegramBot_FactoryEvent{
-  public int $Id = 0;
+  public int $Id;
   public string $Emoji;
   public int $Value;
   public function __construct(){
@@ -56,7 +54,7 @@ class TelegramBot_FactoryEventDice extends TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryEventCommand extends TelegramBot_FactoryEvent{
-  public int $Id = 0;
+  public int $Id;
   public string $Command;
   public ?string $Parameters = null;
   public string $Msg;
@@ -67,7 +65,7 @@ class TelegramBot_FactoryEventCommand extends TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryEventVoice extends TelegramBot_FactoryEvent{
-  public int $Id = 0;
+  public int $Id;
   public string $File;
   public function __construct(){
     parent::__construct();
@@ -76,7 +74,7 @@ class TelegramBot_FactoryEventVoice extends TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryEventImage extends TelegramBot_FactoryEvent{
-  public int $Id = 0;
+  public int $Id;
   public string $File;
   public string $Miniature;
   public function __construct(){
@@ -86,7 +84,7 @@ class TelegramBot_FactoryEventImage extends TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryEventDocument extends TelegramBot_FactoryEvent{
-  public int $Id = 0;
+  public int $Id;
   public string $File;
   public string $Name;
   public function __construct(){
@@ -96,7 +94,7 @@ class TelegramBot_FactoryEventDocument extends TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryEventCallback extends TelegramBot_FactoryEvent{
-  public int $Id = 0;
+  public int $Id;
   public string $Data;
   public array $Parameters = [];
   public function __construct(){
@@ -106,8 +104,8 @@ class TelegramBot_FactoryEventCallback extends TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryEventGroupMe extends TelegramBot_FactoryEvent{
-  public int $Type = 0;
-  public int $Action = 0;
+  public int $Type;
+  public int $Action;
   public function __construct(){
     parent::__construct();
     $this->Type = TelegramBot_Basics::Event_GroupMe;
@@ -115,7 +113,7 @@ class TelegramBot_FactoryEventGroupMe extends TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryEventGroupUpdate extends TelegramBot_FactoryEvent{
-  public int $Action = 0;
+  public int $Action;
   public function __construct(){
     parent::__construct();
     $this->Type = TelegramBot_Basics::Event_GroupUpdate;
@@ -124,9 +122,9 @@ class TelegramBot_FactoryEventGroupUpdate extends TelegramBot_FactoryEvent{
 
 class TelegramBot_FactoryEventInline{
   public object $User;
-  public int $Id = 0;
+  public int $Id;
   public string $ChatType;
-  public ?string $Parameter = null;
+  public string $Parameter;
   public function __construct(){
     $this->User = new TelegramBot_FactoryUser;
     $this->Type = TelegramBot_Basics::Event_Inline;
