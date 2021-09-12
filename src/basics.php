@@ -1,7 +1,7 @@
 <?php
-// 2021.09.11.01
-// Protocol Corporation Ltda.
-// https://github.com/ProtocolLive/TelegramBot
+//2021.09.11.02
+//Protocol Corporation Ltda.
+//https://github.com/ProtocolLive/TelegramBot
 
 class TelegramBot_Basics{
   protected int $Error = self::Error_None;
@@ -63,6 +63,14 @@ class TelegramBot_Basics{
   public const InlineChat_Private = 'private';
   public const InlineChat_Group = 'group';
   public const InlineChat_Channel = 'channel';
+  
+  public const Scope_Default = 'default';
+  public const Scope_Private_All = 'all_private_chats';
+  public const Scope_Group_All = 'all_group_chats';
+  public const Scope_Admins_All = 'all_chat_administrators';
+  public const Scope_Private = 'chat';
+  public const Scope_Admins = 'chat_administrators';
+  public const Scope_Member = 'chat_member';
 
   public const Error_None = 0;
   public const Error_Custom = 1;
