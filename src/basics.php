@@ -1,7 +1,7 @@
 <?php
 //2021.09.13.02
 //Protocol Corporation Ltda.
-//https://github.com/ProtocolLive/TelegramBot
+//https://github.com/ProtocolLive/TelegramBotLibrary
 
 class TelegramBot_Basics{
   protected string $DirLogs;
