@@ -1,9 +1,11 @@
 <?php
-//2021.09.13.01
+//2021.09.13.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
 class TelegramBot_Basics{
+  protected string $DirLogs;
+
   protected int $Error = self::Error_None;
   protected array $Errors = [
     self::Error_Custom => '',
@@ -118,7 +120,7 @@ class TelegramBot_Basics{
       $this->CreateDir(dirname($file));
       $param = null;
     endif;
-    file_put_contents($file, $Msg . "\n\n", $param);
+    file_put_contents($file, $Msg . "\n", $param);
   }
 
   public function Error():?array{

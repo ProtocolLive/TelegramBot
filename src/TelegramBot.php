@@ -1,5 +1,5 @@
 <?php
-//2021.09.13.03
+//2021.09.13.04
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -12,7 +12,6 @@ class TelegramBot extends TelegramBot_Basics{
   private string $Url = 'https://api.telegram.org/bot';
   private string $UrlFiles= 'https://api.telegram.org/file/bot';
   private int $Debug = self::DebugNone;
-  private string $DirLogs;
 
   private function ParseServer(array $Server){
     if(($Server['message']['entities'][0]['type'] ?? null) === 'bot_command'
