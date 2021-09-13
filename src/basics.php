@@ -1,5 +1,5 @@
 <?php
-//2021.09.13.00
+//2021.09.13.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -96,20 +96,29 @@ class TelegramBot_Basics{
   public const DebugWebhook = 1;
   public const DebugSend = 2;
 
+  public const DebugLog_Webhook = 0;
+  public const DebugLog_Send = 1;
+  public const DebugLog_Error = 2;
+
   protected function CreateDir(string $Dir, int $Perm = 0755, bool $Recursive = true):void{
     if(is_dir($Dir) === false):
       mkdir($Dir, $Perm, $Recursive);
     endif;
   }
 
-  protected function DebugLog(string $File, string $Msg):void{
-    if(file_exists($File)):
+  protected function DebugLog(int $Type, string $Msg):void{
+    if($Type === self::DebugLog_Error):
+      $file = $this->DirLogs . '/debug.log';
+    else:
+      $file = $this->DirLogs . '/class.log';
+    endif;
+    if(is_file($file)):
       $param = FILE_APPEND;
     else:
-      $this->CreateDir(dirname($File));
+      $this->CreateDir(dirname($file));
       $param = null;
     endif;
-    file_put_contents($File, $Msg . "\n", $param);
+    file_put_contents($file, $Msg . "\n\n", $param);
   }
 
   public function Error():?array{

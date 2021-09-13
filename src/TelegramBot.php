@@ -1,5 +1,5 @@
 <?php
-//2021.09.13.02
+//2021.09.13.03
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBot
 
@@ -150,7 +150,7 @@ class TelegramBot extends TelegramBot_Basics{
   private function ServerGet(string $Msg, bool $ReturnArray = false, bool $Async = false){
     $temp = $this->Url . $Msg;
     if(($this->Debug & self::DebugSend) === self::DebugSend):
-      $this->DebugLog($this->DirLogs . '/send.log', $temp);
+      $this->DebugLog(self::DebugLog_Send, $temp);
     endif;
     $curl = curl_init($temp);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -162,13 +162,13 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
     $temp = curl_exec($curl);
     if($temp === false):
-      $this->DebugLog($this->DirLogs . '/debug.log', 'cURL error #' . curl_errno($curl) . ' ' . curl_error($curl));
+      $this->DebugLog(self::DebugLog_Error, 'cURL error #' . curl_errno($curl) . ' ' . curl_error($curl));
       $this->Error = self::Error_CurlError;
       return null;
     endif;
     $temp = json_decode($temp, $ReturnArray);
     if(($this->Debug & self::DebugSend) === self::DebugSend):
-      $this->DebugLog($this->DirLogs . '/send.log', json_encode($temp, JSON_PRETTY_PRINT));
+      $this->DebugLog(self::DebugLog_Send, json_encode($temp, JSON_PRETTY_PRINT));
     endif;
     if($ReturnArray):
       if($temp['ok'] === false):
@@ -390,7 +390,7 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
     $Server = json_decode($Server, true);
     if(($this->Debug & self::DebugWebhook) === self::DebugWebhook):
-      $this->DebugLog($this->DirLogs . '/webhook.log', json_encode($Server, JSON_PRETTY_PRINT));
+      $this->DebugLog(self::DebugLog_Webhook, json_encode($Server, JSON_PRETTY_PRINT));
     endif;
     $this->ParseServer($Server);
     return true;
@@ -490,8 +490,8 @@ class TelegramBot extends TelegramBot_Basics{
       $temp = curl_exec($curl);
       $temp = json_decode($temp);
       if(($this->Debug & self::DebugSend) === self::DebugSend):
-        $this->DebugLog($this->DirLogs . '/send.log', $this->Url . '/sendPhoto');
-        $this->DebugLog($this->DirLogs . '/send.log', json_encode($temp, JSON_PRETTY_PRINT));
+        $this->DebugLog(self::DebugLog_Send, $this->Url . '/sendPhoto');
+        $this->DebugLog(self::DebugLog_Send, json_encode($temp, JSON_PRETTY_PRINT));
       endif;
       if($temp->ok === false):
         $this->Errors[0] = $temp->description;
