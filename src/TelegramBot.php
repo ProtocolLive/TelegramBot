@@ -1,10 +1,11 @@
 <?php
-//2021.09.13.04
+//2021.09.13.05
 //Protocol Corporation Ltda.
-//https://github.com/ProtocolLive/TelegramBot
+//https://github.com/ProtocolLive/TelegramBotLibrary
 
 require(__DIR__ . '/basics.php');
 require(__DIR__ . '/factorys.php');
+require(__DIR__ . '/markup.php');
 
 class TelegramBot extends TelegramBot_Basics{
   private array $Me;
@@ -450,7 +451,13 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/getChat?chat_id=' . $Chat);
   }
 
-  public function Send(int $Chat, string $Msg, int $Reply = null, array $Markup = null, bool $Async = false):?object{
+  public function Send(
+    int $Chat,
+    string $Msg,
+    TelegramBot_Markup $Markup = null,
+    int $Reply = null,
+    bool $Async = false
+  ):?object{
     if($Msg === ''):
       $this->Error = self::Error_SendNoMsg;
       return null;
@@ -463,7 +470,7 @@ class TelegramBot extends TelegramBot_Basics{
       $temp .= '&reply_to_message_id=' . $Reply;
     endif;
     if($Markup !== null):
-      $temp .= '&reply_markup=' . urlencode(json_encode($Markup));
+      $temp .= '&reply_markup=' . urlencode(json_encode($Markup->Get()));
     endif;
     return $this->ServerGet($temp, false, $Async);
   }
@@ -515,7 +522,12 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->ServerGet('/sendChatAction?chat_id=' . $Chat . '&action=' . $Status, false, true);
   }
 
-  public function EditText(int $Chat, int $MsgId, string $Msg, array $Markup = null):?object{
+  public function EditText(
+    int $Chat,
+    int $MsgId,
+    string $Msg,
+    TelegramBot_Markup $Markup = null
+  ):?object{
     if($Msg === ''):
       $this->Error = self::Error_SendNoMsg;
       return null;
@@ -525,12 +537,17 @@ class TelegramBot extends TelegramBot_Basics{
     endif;
     $temp = '/editMessageText?chat_id=' . $Chat . '&message_id=' . $MsgId . '&text=' . urlencode($Msg) . '&parse_mode=HTML';
     if($Markup !== null):
-      $temp .= '&reply_markup=' . urlencode(json_encode($Markup));
+      $temp .= '&reply_markup=' . urlencode(json_encode($Markup->Get()));
     endif;
     return $this->ServerGet($temp, false, true);
   }
 
-  public function EditMarkup(int $Chat, int $MsgId, array $Markup, bool $Async = true):?object{
+  public function EditMarkup(
+    int $Chat,
+    int $MsgId,
+    TelegramBot_Markup $Markup,
+    bool $Async = true
+  ):?object{
     return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $MsgId . '&reply_markup=' . urlencode(json_encode($Markup)), false, $Async);
   }
 
