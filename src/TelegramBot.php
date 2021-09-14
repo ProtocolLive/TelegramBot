@@ -1,5 +1,5 @@
 <?php
-//2021.09.14.00
+//2021.09.14.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -212,11 +212,43 @@ class TelegramBot extends TelegramBot_Basics{
 
 // ------------------------ Get / Set -----------------------------
 
-  public function CmdGet():?array{
-    return $this->ServerGet('/getMyCommands', true);
+  public function CmdGet(
+    string $Language = null,
+    string $Scope = null,
+    int $ScopeChat = null,
+    int $ScopeMember = null
+  ):?array{
+    $temp = '/getMyCommands';
+    if($Language !== null):
+      $temp .= '?language_code=' . $Language;
+    endif;
+    if($Scope !== null):
+      $array = ['type' => $Scope];
+      if($Scope === TelegramBot::Scope_Private
+      or $Scope === TelegramBot::Scope_Admins
+      or $Scope === TelegramBot::Scope_Member):
+        $array['chat_id'] = $ScopeChat;
+      endif;
+      if($Scope === TelegramBot::Scope_Member):
+        $array['user_id'] = $ScopeMember;
+      endif;
+      if($Language === null):
+        $temp .= '?';
+      else:
+        $temp .= '&';
+      endif;
+      $temp .= 'scope=' . urlencode(json_encode($array));
+    endif;
+    return $this->ServerGet($temp, true);
   }
 
-  public function CmdSet(array $Cmds, string $Language = null, string $Scope = null, int $ScopeChat = null, int $ScopeMember = null){
+  public function CmdSet(
+    ?array $Cmds,
+    string $Language = null,
+    string $Scope = null,
+    int $ScopeChat = null,
+    int $ScopeMember = null
+  ){
     $temp = '/setMyCommands?commands=' . urlencode(json_encode($Cmds));
     if($Language !== null):
       $temp .= '&language_code=' . $Language;
