@@ -1,5 +1,5 @@
 <?php
-//2021.09.14.01
+//2021.09.14.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -264,6 +264,36 @@ class TelegramBot extends TelegramBot_Basics{
         $array['user_id'] = $ScopeMember;
       endif;
       $temp .= '&scope=' . json_encode($array);
+    endif;
+    return $this->ServerGet($temp);
+  }
+
+  public function CmdDel(
+    string $Language = null,
+    string $Scope = null,
+    int $ScopeChat = null,
+    int $ScopeMember = null
+  ){
+    $temp = '/deleteMyCommands';
+    if($Language !== null):
+      $temp .= '?language_code=' . $Language;
+    endif;
+    if($Scope !== null):
+      $array = ['type' => $Scope];
+      if($Scope === TelegramBot::Scope_Private
+      or $Scope === TelegramBot::Scope_Admins
+      or $Scope === TelegramBot::Scope_Member):
+        $array['chat_id'] = $ScopeChat;
+      endif;
+      if($Scope === TelegramBot::Scope_Member):
+        $array['user_id'] = $ScopeMember;
+      endif;
+      if($Language === null):
+        $temp .= '?';
+      else:
+        $temp .= '&';
+      endif;
+      $temp .= 'scope=' . json_encode($array);
     endif;
     return $this->ServerGet($temp);
   }
