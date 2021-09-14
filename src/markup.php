@@ -1,5 +1,5 @@
 <?php
-//2021.09.13.00
+//2021.09.14.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -16,6 +16,8 @@ class TelegramBot_Markup{
     $this->Type = $Type;
     if($Type === self::Type_Inline):
       $this->Markup['inline_keyboard'] = [];
+    elseif($Type === self::Type_Reply):
+      $this->Markup['force_reply'] = true;
     endif;
   }
 
@@ -102,5 +104,13 @@ class TelegramBot_Markup{
     else:
       return false;
     endif;
+  }
+
+  public function ReplyOptions(
+    bool $Selective,
+    string $PlaceHolder = null
+  ){
+    $this->Markup['input_field_placeholder'] = $PlaceHolder;
+    $this->Markup['selective'] = $Selective;
   }
 }
