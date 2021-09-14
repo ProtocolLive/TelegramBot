@@ -1,7 +1,7 @@
 <?php
-// 2021.09.11.00
-// Protocol Corporation Ltda.
-// https://github.com/ProtocolLive/TelegramBotLibrary
+//2021.09.14.00
+//Protocol Corporation Ltda.
+//https://github.com/ProtocolLive/TelegramBotLibrary
 
 class TelegramBot_FactoryUser{
   public int $Id;
@@ -30,7 +30,7 @@ abstract class TelegramBot_FactoryEvent{
 
 class TelegramBot_FactoryServer{
   public int $Id;
-  public object $Event;
+  public ?object $Event = null;
 }
 
 class TelegramBot_FactoryEventText extends TelegramBot_FactoryEvent{
