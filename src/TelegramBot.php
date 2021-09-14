@@ -1,5 +1,5 @@
 <?php
-//2021.09.13.05
+//2021.09.14.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -260,8 +260,13 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->Me['supports_inline_queries'];
   }
 
-  public function UserId():int{
-    return $this->Server->Event->User->Id;
+  public function UserId():?int{
+    if($this->Server->Event === null):
+      $this->Error = TelegramBot::Error_NoEvent;
+      return null;
+    else:
+      return $this->Server->Event->User->Id;
+    endif;
   }
 
   public function UserBot():bool{
@@ -288,16 +293,26 @@ class TelegramBot extends TelegramBot_Basics{
     return $this->Server->Event->Msg;
   }
 
-  public function ChatId():int{
-    return $this->Server->Event->Chat->Id;
+  public function ChatId():?int{
+    if($this->Server->Event === null):
+      $this->Error = TelegramBot::Error_NoEvent;
+      return null;
+    else:
+      return $this->Server->Event->Chat->Id;
+    endif;
   }
 
   public function ChatName():string{
     return $this->Server->Event->Chat->Name;
   }
 
-  public function Event():int{
-    return $this->Server->Event->Type;
+  public function Event():?int{
+    if($this->Server->Event === null):
+      $this->Error = TelegramBot::Error_NoEvent;
+      return null;
+    else:
+      return $this->Server->Event->Type;
+    endif;
   }
 
   public function MsgId():?int{
