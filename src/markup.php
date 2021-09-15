@@ -1,5 +1,5 @@
 <?php
-//2021.09.14.00
+//2021.09.14.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -9,6 +9,10 @@ class TelegramBot_Markup{
   public const Type_KeyboardRemove = 2;
   public const Type_Reply = 3;
 
+  public const Poll_Both = null;
+  public const Poll_Quiz = 'quiz';
+  public const Poll_Regular = 'regular';
+
   private int $Type;
   private array $Markup = [];
 
@@ -16,6 +20,10 @@ class TelegramBot_Markup{
     $this->Type = $Type;
     if($Type === self::Type_Inline):
       $this->Markup['inline_keyboard'] = [];
+    elseif($Type === self::Type_Keyboard):
+      $this->Markup['keyboard'] = [];
+    elseif($Type === self::Type_KeyboardRemove):
+      $this->Markup['remove_keyboard'] = true;
     elseif($Type === self::Type_Reply):
       $this->Markup['force_reply'] = true;
     endif;
@@ -109,8 +117,66 @@ class TelegramBot_Markup{
   public function ReplyOptions(
     bool $Selective,
     string $PlaceHolder = null
-  ){
-    $this->Markup['input_field_placeholder'] = $PlaceHolder;
-    $this->Markup['selective'] = $Selective;
+  ):bool{
+    if($this->Type === self::Type_Reply):
+      $this->Markup['input_field_placeholder'] = $PlaceHolder;
+      $this->Markup['selective'] = $Selective;
+      return true;
+    else:
+      return false;
+    endif;
+  }
+
+  public function RemoveOptions(
+    bool $Selective,
+  ):bool{
+    if($this->Type === self::Type_KeyboardRemove):
+      $this->Markup['selective'] = $Selective;
+      return true;
+    else:
+      return false;
+    endif;
+  }
+
+  public function KeyboardOptions(
+    bool $Selective,
+    bool $Resize = false,
+    bool $OneTime = false,
+    string $Placeholder = null,
+  ):bool{
+    if($this->Type === self::Type_Keyboard):
+      $this->Markup['resize_keyboard'] = $Resize;
+      $this->Markup['one_time_keyboard'] = $OneTime;
+      $this->Markup['input_field_placeholder'] = $Placeholder;
+      $this->Markup['selective'] = $Selective;
+      return true;
+    else:
+      return false;
+    endif;
+  }
+
+  public function ButtonKeyboard(
+    int $Line,
+    int $Column,
+    string $Text,
+    bool $Contact = false,
+    bool $Location = false,
+    string $Pool = null
+  ):bool{
+    if($this->Type === self::Type_Keyboard):
+      $this->Markup['keyboard'][$Line][$Column]['text'] = $Text;
+      if($Contact):
+        $this->Markup['keyboard'][$Line][$Column]['request_contact'] = $Contact;
+      endif;
+      if($Location):
+        $this->Markup['keyboard'][$Line][$Column]['request_location'] = $Location;
+      endif;
+      if($Pool !== null):
+        $this->Markup['keyboard'][$Line][$Column]['request_poll']['type'] = $Pool;
+      endif;
+      return true;
+    else:
+      return false;
+    endif;
   }
 }
