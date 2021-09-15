@@ -1,13 +1,14 @@
 <?php
-//2021.09.14.01
+//2021.09.14.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
 class TelegramBot_Markup{
   public const Type_Inline = 0;
-  public const Type_Keyboard = 1;
-  public const Type_KeyboardRemove = 2;
-  public const Type_Reply = 3;
+  public const Type_InlineRemove = 1;
+  public const Type_Keyboard = 2;
+  public const Type_KeyboardRemove = 3;
+  public const Type_Reply = 4;
 
   public const Poll_Both = null;
   public const Poll_Quiz = 'quiz';
@@ -18,7 +19,8 @@ class TelegramBot_Markup{
 
   public function __construct(int $Type){
     $this->Type = $Type;
-    if($Type === self::Type_Inline):
+    if($Type === self::Type_Inline
+    or $Type === self::Type_InlineRemove):
       $this->Markup['inline_keyboard'] = [];
     elseif($Type === self::Type_Keyboard):
       $this->Markup['keyboard'] = [];
