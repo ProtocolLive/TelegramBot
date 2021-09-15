@@ -1,5 +1,5 @@
 <?php
-//2021.09.14.02
+//2021.09.14.03
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -130,7 +130,7 @@ class TelegramBot_Markup{
   }
 
   public function RemoveOptions(
-    bool $Selective,
+    bool $Selective
   ):bool{
     if($this->Type === self::Type_KeyboardRemove):
       $this->Markup['selective'] = $Selective;
