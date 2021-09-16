@@ -1,5 +1,5 @@
 <?php
-//2021.09.14.00
+//2021.09.16.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -19,7 +19,7 @@ class TelegramBot_FactoryChat{
 }
 
 abstract class TelegramBot_FactoryEvent{
-  public int $Type;
+  public ?int $Type = TelegramBot_Basics::Event_Null;
   public object $User;
   public object $Chat;
   public function __construct(){
