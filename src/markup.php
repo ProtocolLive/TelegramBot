@@ -1,5 +1,5 @@
 <?php
-//2021.09.16.00
+//2021.09.16.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -144,13 +144,13 @@ class TblMarkup{
     bool $Selective,
     bool $Resize = false,
     bool $OneTime = false,
-    string $Placeholder = null,
+    string $Placeholder = null
   ):bool{
     if($this->Type === self::Type_Keyboard):
+      $this->Markup['selective'] = $Selective;
       $this->Markup['resize_keyboard'] = $Resize;
       $this->Markup['one_time_keyboard'] = $OneTime;
       $this->Markup['input_field_placeholder'] = $Placeholder;
-      $this->Markup['selective'] = $Selective;
       return true;
     else:
       return false;
