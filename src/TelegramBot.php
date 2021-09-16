@@ -1,5 +1,5 @@
 <?php
-//2021.09.16.00
+//2021.09.16.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -85,6 +85,7 @@ class TelegramBot extends TelegramBot_Basics{
     elseif(isset($Server['callback_query'])):
       $this->Server->Event = new TelegramBot_FactoryEventCallback;
       $this->Server->Event->Id = $Server['callback_query']['message']['message_id'];
+      $this->Server->Event->CallbackId = $Server['callback_query']['id'];
       $temp = explode(' ', $Server['callback_query']['data']);
       $this->Server->Event->Data = $temp[0];
       if(isset($temp[1])):
@@ -415,6 +416,15 @@ class TelegramBot extends TelegramBot_Basics{
       return $this->Server->Event->Name;
     else:
       $this->Error = self::Error_NoEventDocument;
+      return null;
+    endif;
+  }
+
+  public function CallbackId():?string{
+    if($this->Server->Event->Type === self::Event_Callback):
+      return $this->Server->Event->CallbackId;
+    else:
+      $this->Error = self::Error_NoEventCallback;
       return null;
     endif;
   }
