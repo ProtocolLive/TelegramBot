@@ -1,5 +1,5 @@
 <?php
-//2021.09.16.01
+//2021.09.16.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -646,6 +646,23 @@ class TelegramBot extends TelegramBot_Basics{
     $temp = '/sendContact?chat_id=' . $Chat . '&phone_number=' . urlencode($Number) . '&first_name=' . urlencode($Name);
     if($Vcard !== null):
       $temp .= '&vcard=' . urlencode($Vcard);
+    endif;
+    return $this->ServerGet($temp);
+  }
+
+  public function AnswerCallback(int $QueryId, string $Msg = null, bool $Alert = false, string $Url = null, int $Cache = 0):?bool{
+    $temp = '/answerCallbackQuery?callback_query_id=' . $QueryId;
+    if($Msg !== null):
+      $temp .= '&text=' . urlencode($Msg);
+    endif;
+    if($Alert):
+      $temp .= '&show_alert=true';
+    endif;
+    if($Url !== null):
+      $temp .= '&url=' . $Url;
+    endif;
+    if($Cache > 0):
+      $temp .= '&cache_time=' . $Cache;
     endif;
     return $this->ServerGet($temp);
   }
