@@ -1,9 +1,9 @@
 <?php
-//2021.09.14.03
+//2021.09.16.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
-class TelegramBot_Markup{
+class TblMarkup{
   public const Type_Inline = 0;
   public const Type_InlineRemove = 1;
   public const Type_Keyboard = 2;

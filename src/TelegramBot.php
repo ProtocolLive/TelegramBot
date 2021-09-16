@@ -1,5 +1,5 @@
 <?php
-//2021.09.14.02
+//2021.09.16.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -531,7 +531,7 @@ class TelegramBot extends TelegramBot_Basics{
   public function Send(
     int $Chat,
     string $Msg,
-    TelegramBot_Markup $Markup = null,
+    TblMarkup $Markup = null,
     int $Reply = null,
     bool $Async = false
   ):?object{
@@ -603,7 +603,7 @@ class TelegramBot extends TelegramBot_Basics{
     int $Chat,
     int $MsgId,
     string $Msg,
-    TelegramBot_Markup $Markup = null
+    TblMarkup $Markup = null
   ):?object{
     if($Msg === ''):
       $this->Error = self::Error_SendNoMsg;
@@ -622,7 +622,7 @@ class TelegramBot extends TelegramBot_Basics{
   public function EditMarkup(
     int $Chat,
     int $MsgId,
-    TelegramBot_Markup $Markup,
+    TblMarkup $Markup,
     bool $Async = true
   ):?object{
     return $this->ServerGet('/editMessageReplyMarkup?chat_id=' . $Chat . '&message_id=' . $MsgId . '&reply_markup=' . urlencode(json_encode($Markup)), false, $Async);
