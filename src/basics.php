@@ -26,18 +26,18 @@ class TelegramBot_Basics{
 
   public const MsgSizeLimit = 4096;
 
-  public const Event_Null = 0;
+  public const Event_Null = null;
+  public const Event_Text = 0;
   public const Event_Command = 1;
-  public const Event_Text = 2;
-  public const Event_Voice = 3;
-  public const Event_Image = 4;
-  public const Event_Document = 5;
-  public const Event_Callback = 6;
-  public const Event_GroupMe = 7;
-  public const Event_GroupUpdate = 8;
-  public const Event_Dice = 9;
-  public const Event_Inline = 10;
-  public const Event_Edited = 11;
+  public const Event_Voice = 2;
+  public const Event_Image = 3;
+  public const Event_Document = 4;
+  public const Event_Callback = 5;
+  public const Event_GroupMe = 6;
+  public const Event_GroupUpdate = 7;
+  public const Event_Dice = 8;
+  public const Event_Inline = 9;
+  public const Event_Edited = 10;
 
   public const Chat_Private = 1;
   public const Chat_Group = 2;
