@@ -1,5 +1,5 @@
 <?php
-//2021.09.16.00
+//2021.09.16.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -104,7 +104,6 @@ class TelegramBot_FactoryEventCallback extends TelegramBot_FactoryEvent{
 }
 
 class TelegramBot_FactoryEventGroupMe extends TelegramBot_FactoryEvent{
-  public int $Type;
   public int $Action;
   public function __construct(){
     parent::__construct();
