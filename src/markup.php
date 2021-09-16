@@ -1,5 +1,5 @@
 <?php
-//2021.09.16.01
+//2021.09.16.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -150,7 +150,9 @@ class TblMarkup{
       $this->Markup['selective'] = $Selective;
       $this->Markup['resize_keyboard'] = $Resize;
       $this->Markup['one_time_keyboard'] = $OneTime;
-      $this->Markup['input_field_placeholder'] = $Placeholder;
+      if($Placeholder !== null):
+        $this->Markup['input_field_placeholder'] = $Placeholder;
+      endif;
       return true;
     else:
       return false;
