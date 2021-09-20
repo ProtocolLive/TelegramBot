@@ -1,118 +1,259 @@
 <?php
-//2021.09.13.02
+//2021.09.19.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
-class TelegramBot_Basics{
-  protected string $DirLogs;
+class TblBasics{
+  protected TblData $BotData;
+  protected int $Error = TblError::None;
+  protected ?string $ErrorStr = null;
 
-  protected int $Error = self::Error_None;
-  protected array $Errors = [
-    self::Error_Custom => '',
-    self::Error_NoSsl => 'Extension OpenSSL not found',
-    self::Error_NoCurl => 'Extension cURL not found',
-    self::Error_NoToken => 'No token',
-    self::Error_NoMe => 'Could not get bot data',
-    self::Error_SendMsgTooBig => 'The message is bigger than ' . self::MsgSizeLimit,
-    self::Error_SendNoMsg => 'No message to send',
-    self::Error_NoEvent => 'No event to parse',
-    self::Error_NoEventMsg => 'No message event',
-    self::Error_NoEventDocument => 'No document event',
-    self::Error_NoEventImage => 'No image event',
-    self::Error_NoEventCallback => 'No callback event',
-    self::Error_NoFile => 'No file to get',
-    self::Error_SendTimeout => 'Timeout to get response from server. Maybe the request are been done.'
-  ];
-
-  public const MsgSizeLimit = 4096;
-
-  public const Event_Null = null;
-  public const Event_Text = 0;
-  public const Event_Command = 1;
-  public const Event_Voice = 2;
-  public const Event_Image = 3;
-  public const Event_Document = 4;
-  public const Event_Callback = 5;
-  public const Event_GroupMe = 6;
-  public const Event_GroupUpdate = 7;
-  public const Event_Dice = 8;
-  public const Event_Inline = 9;
-  public const Event_Edited = 10;
-
-  public const Chat_Private = 1;
-  public const Chat_Group = 2;
-
-  public const GroupMe_Add = 1;
-  public const GroupMe_Quit = 2;
-  public const GroupMe_AutoClean = 3;
-  public const GroupMe_Admin = 4;
-  public const GroupMe_Kicked = 5;
-  
-  public const GroupUpdate_Add = 1;
-  public const GroupUpdate_Quit = 2;
-
-  public const Action_Typing = 'typing';
-  public const Action_Photo = 'upload_photo';
-  public const Action_Video = 'upload_video';
-  public const Action_VideoNote = 'upload_video_note';
-  public const Action_VideoRec = 'record_video';
-  public const Action_VideoRecNote = 'record_video_note';
-  public const Action_VoiceRec = 'record_voice';
-  public const Action_Voice = 'upload_voice';
-  public const Action_Doc = 'upload_document';
-  public const Action_Gps = 'find_location';
-
-  public const InlineChat_Sender = 'sender';
-  public const InlineChat_Private = 'private';
-  public const InlineChat_Group = 'group';
-  public const InlineChat_Channel = 'channel';
-  
-  public const Scope_Default = 'default';
-  public const Scope_Private_All = 'all_private_chats';
-  public const Scope_Group_All = 'all_group_chats';
-  public const Scope_Admins_All = 'all_chat_administrators';
-  public const Scope_Private = 'chat';
-  public const Scope_Admins = 'chat_administrators';
-  public const Scope_Member = 'chat_member';
-
-  public const Error_None = 0;
-  public const Error_Custom = 1;
-  public const Error_NoSsl = 2;
-  public const Error_NoCurl = 3;
-  public const Error_NoToken = 4;
-  public const Error_NoMe = 5;
-  public const Error_SendMsgTooBig = 6;
-  public const Error_SendNoMsg = 7;
-  public const Error_NoEvent = 8;
-  public const Error_NoEventMsg = 9;
-  public const Error_NoEventDocument = 10;
-  public const Error_NoEventImage = 11;
-  public const Error_NoEventCallback = 12;
-  public const Error_NoEventCommand = 13;
-  public const Error_NoFile = 14;
-  public const Error_SendTimeout = 15;
-  public const Error_CurlError = 16;
-
-  public const DebugAll = -1;
-  public const DebugNone = 0;
-  public const DebugWebhook = 1;
-  public const DebugSend = 2;
-
-  public const DebugLog_Webhook = 0;
-  public const DebugLog_Send = 1;
-  public const DebugLog_Error = 2;
-
-  protected function CreateDir(string $Dir, int $Perm = 0755, bool $Recursive = true):void{
-    if(is_dir($Dir) === false):
-      mkdir($Dir, $Perm, $Recursive);
+  /**
+   * @return null|bool|array
+   */
+  protected function ServerMethod(
+    string $Msg,
+    bool $Async = false
+  ){
+    $temp = $this->BotData->UrlApi . $Msg;
+    if(($this->BotData->Debug & TblDebug::Send) === TblDebug::Send):
+      $this->DebugLog(TblDebugLog::Send, $temp);
+    endif;
+    $curl = curl_init($temp);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_USERAGENT, 'Protocol SimpleTelegramBot');
+    curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
+    if($Async):
+      curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 500);
+      curl_setopt($curl, CURLOPT_TIMEOUT_MS, 500);
+    endif;
+    $temp = curl_exec($curl);
+    if($temp === false):
+      $this->DebugLog(
+        TblDebugLog::Error,
+        'cURL error #' . curl_errno($curl) . ' ' . curl_error($curl)
+      );
+      $this->Error = TblError::CurlError;
+      return null;
+    endif;
+    $temp = json_decode($temp, true);
+    if(($this->BotData->Debug & TblDebug::Send) === TblDebug::Send):
+      $this->DebugLog(TblDebugLog::Send, json_encode($temp, JSON_PRETTY_PRINT));
+    endif;
+    if($temp['ok'] === false):
+      $this->Error = TblError::Custom;
+      $this->ErrorStr = $temp['description'];
+      return null;
+    else:
+      return $temp['result'];
     endif;
   }
 
-  protected function DebugLog(int $Type, string $Msg):void{
-    if($Type === self::DebugLog_Error):
-      $file = $this->DirLogs . '/debug.log';
+  //https://core.telegram.org/bots/api#sendmessage
+  public function SendMsg(
+    int $Chat,
+    string $Msg,
+    TblMarkup $Markup = null,
+    TblEntities $Entities = null,
+    int $Reply = null,
+    bool $PreventReplyErr = null,
+    string $ParseMode = null,
+    bool $DisablePreview = null,
+    bool $DisableNotification = null,
+    bool $Async = false
+  ){
+    $Params['chat_id'] = $Chat;
+    $Params['text'] = $Msg;
+    if($Markup !== null):
+      $Params['reply_markup'] = json_encode($Markup->Get());
+    endif;
+    if($Entities !== null):
+      $Params['entities'] = json_encode($Entities->Get());
+    endif;
+    if($Reply !== null):
+      $Params['reply_to_message_id'] = $Reply;
+    endif;
+    if($ParseMode !== null):
+      $Params['parse_mode'] = $ParseMode;
+    endif;
+    if($DisablePreview === true):
+      $Params['disable_web_page_preview'] = true;
+    endif;
+    if($DisableNotification === true):
+      $Params['disable_notification'] = true;
+    endif;
+    if($PreventReplyErr === true):
+      $Params['allow_sending_without_reply'] = true;
+    endif;
+    return $this->ServerMethod('/sendMessage?' . http_build_query($Params), $Async);
+  }
+
+  //https://core.telegram.org/bots/api#editmessagetext
+  public function EditMsg(
+    int $Chat,
+    int $MsgId,
+    string $Msg,
+    TblMarkup $Markup = null,
+    TblEntities $Entities = null,
+    string $ParseMode = null,
+    bool $DisablePreview = null
+  ){
+    $Params['chat_id'] = $Chat;
+    $Params['message_id'] = $MsgId;
+    $Params['text'] = $Msg;
+    if($Markup !== null):
+      $Params['reply_markup'] = json_encode($Markup->Get());
+    endif;
+    if($Entities !== null):
+      $Params['entities'] = json_encode($Entities->Get());
+    endif;
+    if($ParseMode !== null):
+      $Params['parse_mode'] = $ParseMode;
+    endif;
+    if($DisablePreview === true):
+      $Params['disable_web_page_preview'] = true;
+    endif;
+    return $this->ServerMethod('/editMessageText?' . http_build_query($Params));
+  }
+
+  //https://core.telegram.org/bots/api#editmessagereplymarkup
+  public function EditMarkup(
+    int $Chat,
+    int $MsgId,
+    TblMarkup $Markup = null
+  ){
+    $Params['chat_id'] = $Chat;
+    $Params['message_id'] = $MsgId;
+    if($Markup !== null):
+      $Params['reply_markup'] = json_encode($Markup->Get());
+    endif;
+    return $this->ServerMethod('/editMessageReplyMarkup?' . http_build_query($Params));
+  }
+
+  //https://core.telegram.org/bots/api#sendcontact
+  public function SendContact(
+    int $Chat,
+    string $Name,
+    string $Phone,
+    string $Vcard = null,
+    string $NameLast = null,
+    TblMarkup $Markup = null,
+    int $Reply = null,
+    bool $PreventReplyErr = null,
+    bool $DisableNotification = null
+  ){
+    $Params['chat_id'] = $Chat;
+    $Params['phone_number'] = $Phone;
+    $Params['first_name'] = $Name;
+    if($NameLast !== null):
+      $Params['last_name'] = $NameLast;
+    endif;
+    if($Vcard !== null):
+      $Params['vcard'] = $Vcard;
+    endif;
+    if($Markup !== null):
+      $Params['reply_markup'] = json_encode($Markup->Get());
+    endif;
+    if($Reply !== null):
+      $Params['reply_to_message_id'] = $Reply;
+    endif;
+    if($DisableNotification === true):
+      $Params['disable_notification'] = true;
+    endif;
+    if($PreventReplyErr === true):
+      $Params['allow_sending_without_reply'] = true;
+    endif;
+    return $this->ServerMethod('/sendContact?' . http_build_query($Params));
+  }
+
+  //https://core.telegram.org/bots/api#sendphoto
+  /**
+   * @param string $Photo File, FileId or URL
+   */
+  public function SendPhoto(
+    int $Chat,
+    string $Photo,
+    string $Caption = null,
+    TblMarkup $Markup = null,
+    TblEntities $Entities = null,
+    int $Reply = null,
+    bool $PreventReplyErr = null,
+    string $ParseMode = null,
+    bool $DisableNotification = null
+  ){
+    $Params['chat_id'] = $Chat;
+    if($Caption !== null):
+      $Params['caption'] = $Caption;
+    endif;
+    if($Markup !== null):
+      $Params['reply_markup'] = json_encode($Markup->Get());
+    endif;
+    if($Entities !== null):
+      $Params['caption_entities'] = json_encode($Entities->Get());
+    endif;
+    if($Reply !== null):
+      $Params['reply_to_message_id'] = $Reply;
+    endif;
+    if($PreventReplyErr === true):
+      $Params['allow_sending_without_reply'] = true;
+    endif;
+    if($ParseMode !== null):
+      $Params['parse_mode'] = $ParseMode;
+    endif;
+    if($DisableNotification === true):
+      $Params['disable_notification'] = true;
+    endif;
+    if(file_exists($Photo)):
+      $url = $this->BotData->UrlFiles . '/sendPhoto?' . http_build_query($Params);
+      $curl = curl_init($url);
+      curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($curl, CURLOPT_POST, true);
+      curl_setopt($curl, CURLOPT_POSTFIELDS, [
+        'photo' => new CurlFile($Photo)
+      ]);
+      curl_setopt($curl, CURLOPT_INFILESIZE, filesize($Photo));
+      $temp = curl_exec($curl);
+      if($temp === false):
+        $this->DebugLog(
+          TblDebugLog::Error,
+          'cURL error #' . curl_errno($curl) . ' ' . curl_error($curl)
+        );
+        $this->Error = TblError::CurlError;
+        return null;
+      else:
+        $temp = json_decode($temp);
+        if(($this->Debug & TblDebug::Send) === TblDebug::Send):
+          $this->DebugLog(TblDebugLog::Send, $url);
+          $this->DebugLog(TblDebugLog::Send, json_encode($temp, JSON_PRETTY_PRINT));
+        endif;
+        if($temp['ok'] === false):
+          $this->Error = TblError::Custom;
+          $this->ErrorStr = $temp['description'];
+          return null;
+        else:
+          return $temp['result'];
+        endif;
+      endif;
     else:
-      $file = $this->DirLogs . '/class.log';
+      $Params['photo'] = $Photo;
+      return $this->ServerMethod('/sendPhoto?' . http_build_query($Params));
+    endif;
+  }
+
+  //https://core.telegram.org/bots/api#sendchataction
+  public function SendAction(int $Chat, string $Action):?bool{
+    return $this->ServerMethod('/sendChatAction?chat_id=' . $Chat . '&action=' . $Action, true);
+  }
+
+  protected function DebugLog(
+    int $Type,
+    string $Msg
+  ):void{
+    if($Type === TblDebugLog::Error):
+      $file = $this->BotData->DirLogs . '/debug.log';
+    else:
+      $file = $this->BotData->DirLogs . '/class.log';
     endif;
     if(is_file($file)):
       $param = FILE_APPEND;
@@ -123,13 +264,39 @@ class TelegramBot_Basics{
     file_put_contents($file, $Msg . "\n", $param);
   }
 
-  public function Error():?array{
-    if($this->Error === self::Error_None):
+  protected function CreateDir(
+    string $Dir,
+    int $Perm = 0755,
+    bool $Recursive = true
+  ):void{
+    if(is_dir($Dir) === false):
+      mkdir($Dir, $Perm, $Recursive);
+    endif;
+  }
+
+  public function ErrorGet():?array{
+    $ErrorStr = [
+      TblError::NoSsl => 'Extension OpenSSL not found',
+      TblError::NoCurl => 'Extension cURL not found',
+      TblError::NoToken => 'No token',
+      TblError::NoMe => 'Could not get bot data',
+      TblError::SendMsgTooBig => 'The message is bigger than ' . TblConstants::MsgSizeLimit,
+      TblError::SendNoMsg => 'No message to send',
+      TblError::NoEvent => 'No event to parse',
+      TblError::NoEventMsg => 'No message event',
+      TblError::NoEventDocument => 'No document event',
+      TblError::NoEventImage => 'No image event',
+      TblError::NoEventCallback => 'No callback event',
+      TblError::NoFile => 'No file to get',
+      TblError::SendTimeout => 'Timeout to get response from server. Maybe the request are been done.',
+      TblError::CurlError => 'cURL error. See the logs.'
+    ];
+    if($this->Error === TblError::None):
       return null;
-    elseif($this->Error === self::Error_Custom):
-      return [$this->Error, $this->Errors[self::Error_Custom]];
+    elseif($this->Error === TblError::Custom):
+      return [TblError::Custom, $this->ErrorStr];
     else:
-      return [$this->Error, $this->Errors[$this->Error]];
+      return [$this->Error, $ErrorStr[$this->Error]];
     endif;
   }
 }
