@@ -1,5 +1,5 @@
 <?php
-//2021.09.21.01
+//2021.09.21.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -179,7 +179,8 @@ class TblBasics{
     int $Reply = null,
     bool $PreventReplyErr = null,
     string $ParseMode = null,
-    bool $DisableNotification = null
+    bool $DisableNotification = null,
+    bool $Async = true
   ){
     $Params['chat_id'] = $Chat;
     if($Caption !== null):
@@ -222,9 +223,9 @@ class TblBasics{
         $this->Error = TblError::CurlError;
         return null;
       else:
-        $temp = json_decode($temp);
-        if(($this->Debug & TblDebug::Send) === TblDebug::Send):
-          $this->DebugLog(TblDebugLog::Send, $url);
+        $temp = json_decode($temp, true);
+        if(($this->BotData->Debug & TblDebug::Send) === TblDebug::Send):
+          $this->DebugLog(TblDebugLog::Send, $url . http_build_query($Params));
           $this->DebugLog(TblDebugLog::Send, json_encode($temp, JSON_PRETTY_PRINT));
         endif;
         if($temp['ok'] === false):
@@ -237,7 +238,7 @@ class TblBasics{
       endif;
     else:
       $Params['photo'] = $Photo;
-      return $this->ServerMethod('/sendPhoto?' . http_build_query($Params));
+      return $this->ServerMethod('/sendPhoto?' . http_build_query($Params), $Async);
     endif;
   }
 
