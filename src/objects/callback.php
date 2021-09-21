@@ -1,5 +1,5 @@
 <?php
-//2021.09.19.00
+//2021.09.21.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -33,23 +33,24 @@ class TblCallback extends TblBasics{
 
   public function ReplyMsg(
     string $Msg,
-    bool $Reply = false,
     TblMarkup $Markup = null,
     TblEntities $Entities = null,
     string $ParseMode = null,
     bool $DisablePreview = null,
-    bool $DisableNotification = null
+    bool $DisableNotification = null,
+    bool $Async = false
   ){
-    $this->SendMsg(
+    return $this->SendMsg(
       $this->Msg->Chat->Id,
       $Msg,
       $Markup,
       $Entities,
-      $Reply? $this->Id : null,
-      null,
       $ParseMode,
       $DisablePreview,
-      $DisableNotification
+      $DisableNotification,
+      null,
+      null,
+      $Async
     );
   }
 

@@ -1,5 +1,5 @@
 <?php
-//2021.09.19.00
+//2021.09.21.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -55,11 +55,11 @@ class TblBasics{
     string $Msg,
     TblMarkup $Markup = null,
     TblEntities $Entities = null,
-    int $Reply = null,
-    bool $PreventReplyErr = null,
     string $ParseMode = null,
     bool $DisablePreview = null,
     bool $DisableNotification = null,
+    int $Reply = null,
+    bool $PreventReplyErr = null,
     bool $Async = false
   ){
     $Params['chat_id'] = $Chat;
