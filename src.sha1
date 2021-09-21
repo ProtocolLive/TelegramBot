@@ -4,7 +4,7 @@ c5e44d6d5986ee400b6dacfac447f23909642076  src/TelegramBotLibrary.php
 7d2df6009eb1cae5e4e751afa883547a9347492f  src/constants.php
 d9d82518ed2a7959c33dd4a508ea7ed9d2516603  src/objects/callback.php
 ebb6b60e6ab85f3005fc0d0331395e4923378f32  src/objects/chat.php
-12412c25a0c1c2359c16d23adef5a843f54ce766  src/objects/cmd.php
+9a4cfc165559fdcc519fecec6e58a3a91ab51f80  src/objects/cmd.php
 9978e9a5954fa079294a9427eb01b926b0d061e9  src/objects/data.php
 33c7bb37f80f5261ade8e4c0b4d3ce5686087a5e  src/objects/doc.php
 858f01aeba09f7ae7349f73cfbf325d909972c7b  src/objects/entity.php

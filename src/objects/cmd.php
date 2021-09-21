@@ -1,5 +1,5 @@
 <?php
-//2021.09.21.01
+//2021.09.21.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -79,7 +79,8 @@ class TblCmd extends TblBasics{
     TblMarkup $Markup = null,
     TblEntities $Entities = null,
     string $ParseMode = null,
-    bool $DisableNotification = null
+    bool $DisableNotification = null,
+    bool $Async = true
   ){
     $this->SendPhoto(
       $this->Chat->Id,
@@ -90,7 +91,8 @@ class TblCmd extends TblBasics{
       null,
       null,
       $ParseMode,
-      $DisableNotification
+      $DisableNotification,
+      $Async
     );
   }
 
