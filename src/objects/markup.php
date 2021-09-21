@@ -1,32 +1,30 @@
 <?php
-//2021.09.16.02
+//2021.09.18.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
 class TblMarkup{
-  public const Type_Inline = 0;
-  public const Type_InlineRemove = 1;
-  public const Type_Keyboard = 2;
-  public const Type_KeyboardRemove = 3;
-  public const Type_Reply = 4;
-
-  public const Poll_Both = null;
-  public const Poll_Quiz = 'quiz';
-  public const Poll_Regular = 'regular';
-
   private int $Type;
   private array $Markup = [];
+  
+  public const TypeInline = 0;
+  public const TypeKeyboard = 1;
+  public const TypeKeyboardRemove = 2;
+  public const TypeReply = 3;
+
+  public const PollBoth = null;
+  public const PollQuiz = 'quiz';
+  public const PollRegular = 'regular';
 
   public function __construct(int $Type){
     $this->Type = $Type;
-    if($Type === self::Type_Inline
-    or $Type === self::Type_InlineRemove):
+    if($Type === self::TypeInline):
       $this->Markup['inline_keyboard'] = [];
-    elseif($Type === self::Type_Keyboard):
+    elseif($Type === self::TypeKeyboard):
       $this->Markup['keyboard'] = [];
-    elseif($Type === self::Type_KeyboardRemove):
+    elseif($Type === self::TypeKeyboardRemove):
       $this->Markup['remove_keyboard'] = true;
-    elseif($Type === self::Type_Reply):
+    elseif($Type === self::TypeReply):
       $this->Markup['force_reply'] = true;
     endif;
   }
@@ -41,7 +39,7 @@ class TblMarkup{
     string $Text,
     string $Url
   ):bool{
-    if($this->Type === self::Type_Inline):
+    if($this->Type === self::TypeInline):
       $this->Markup['inline_keyboard'][$Line][$Column] = [
         'text' => $Text,
         'url' => $Url
@@ -61,7 +59,7 @@ class TblMarkup{
     string $ForwardText = null,
     string $BotName = null
   ):bool{
-    if($this->Type === self::Type_Inline):
+    if($this->Type === self::TypeInline):
       $this->Markup['inline_keyboard'][$Line][$Column]['text'] = $Text;
       $this->Markup['inline_keyboard'][$Line][$Column]['login_url']['url'] = $Url;
       if($ForwardText !== null):
@@ -85,7 +83,7 @@ class TblMarkup{
     string $Text,
     string $Data
   ):bool{
-    if($this->Type === self::Type_Inline):
+    if($this->Type === self::TypeInline):
       $this->Markup['inline_keyboard'][$Line][$Column] = [
         'text' => $Text,
         'callback_data' => $Data
@@ -103,7 +101,7 @@ class TblMarkup{
     string $Query,
     bool $OtherChat = false
   ):bool{
-    if($this->Type === self::Type_Inline):
+    if($this->Type === self::TypeInline):
       $this->Markup['inline_keyboard'][$Line][$Column]['text'] = $Text;
       if($OtherChat):
         $this->Markup['inline_keyboard'][$Line][$Column]['switch_inline_query'] = $Query;
@@ -120,7 +118,7 @@ class TblMarkup{
     bool $Selective,
     string $PlaceHolder = null
   ):bool{
-    if($this->Type === self::Type_Reply):
+    if($this->Type === self::TypeReply):
       $this->Markup['input_field_placeholder'] = $PlaceHolder;
       $this->Markup['selective'] = $Selective;
       return true;
@@ -132,7 +130,7 @@ class TblMarkup{
   public function RemoveOptions(
     bool $Selective
   ):bool{
-    if($this->Type === self::Type_KeyboardRemove):
+    if($this->Type === self::TypeKeyboardRemove):
       $this->Markup['selective'] = $Selective;
       return true;
     else:
@@ -146,7 +144,7 @@ class TblMarkup{
     bool $OneTime = false,
     string $Placeholder = null
   ):bool{
-    if($this->Type === self::Type_Keyboard):
+    if($this->Type === self::TypeKeyboard):
       $this->Markup['selective'] = $Selective;
       $this->Markup['resize_keyboard'] = $Resize;
       $this->Markup['one_time_keyboard'] = $OneTime;
@@ -167,7 +165,7 @@ class TblMarkup{
     bool $Location = false,
     string $Pool = null
   ):bool{
-    if($this->Type === self::Type_Keyboard):
+    if($this->Type === self::TypeKeyboard):
       $this->Markup['keyboard'][$Line][$Column]['text'] = $Text;
       if($Contact):
         $this->Markup['keyboard'][$Line][$Column]['request_contact'] = $Contact;
