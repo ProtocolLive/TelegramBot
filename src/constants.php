@@ -1,5 +1,5 @@
 <?php
-//2021.09.19.00
+//2021.09.21.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -72,7 +72,7 @@ abstract class TblEvents{
   public const Voice = 3;
 }
 
-abstract class TblParseMode{
+abstract class TblParse{
   public const Markdown2 = 'MarkdownV2';
   public const Markdown = 'markdown';
   public const Html = 'HTML';
