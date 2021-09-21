@@ -1,5 +1,5 @@
 <?php
-//2021.09.21.00
+//2021.09.21.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -13,7 +13,7 @@ class TblBasics{
    */
   protected function ServerMethod(
     string $Msg,
-    bool $Async = false
+    bool $Async = true
   ){
     $temp = $this->BotData->UrlApi . $Msg;
     if(($this->BotData->Debug & TblDebug::Send) === TblDebug::Send):
@@ -60,7 +60,7 @@ class TblBasics{
     bool $DisableNotification = null,
     int $Reply = null,
     bool $PreventReplyErr = null,
-    bool $Async = false
+    bool $Async = true
   ){
     $Params['chat_id'] = $Chat;
     $Params['text'] = $Msg;
@@ -243,7 +243,7 @@ class TblBasics{
 
   //https://core.telegram.org/bots/api#sendchataction
   public function SendAction(int $Chat, string $Action):?bool{
-    return $this->ServerMethod('/sendChatAction?chat_id=' . $Chat . '&action=' . $Action, true);
+    return $this->ServerMethod('/sendChatAction?chat_id=' . $Chat . '&action=' . $Action);
   }
 
   protected function DebugLog(

@@ -1,5 +1,5 @@
 <?php
-//2021.09.21.00
+//2021.09.21.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -46,7 +46,7 @@ class TblDoc extends TblBasics{
     bool $DisablePreview = null,
     bool $DisableNotification = null,
     bool $Reply = false,
-    bool $Async = false
+    bool $Async = true
   ){
     return $this->SendMsg(
       $this->Chat->Id,

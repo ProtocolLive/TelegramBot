@@ -1,5 +1,5 @@
 <?php
-//2021.09.21.00
+//2021.09.21.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -38,7 +38,7 @@ class TblCallback extends TblBasics{
     string $ParseMode = null,
     bool $DisablePreview = null,
     bool $DisableNotification = null,
-    bool $Async = false
+    bool $Async = true
   ){
     return $this->SendMsg(
       $this->Msg->Chat->Id,
