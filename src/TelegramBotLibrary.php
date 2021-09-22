@@ -1,5 +1,5 @@
 <?php
-//2021.09.22.02
+//2021.09.22.03
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -26,7 +26,7 @@ class TelegramBotLibrary extends TblBasics{
 
   //https://core.telegram.org/bots/api#getchat
   public function ChatGet(int $Chat):?TblChat{
-    $temp = $this->ServerMethod('/getChat&getChat=' . $Chat);
+    $temp = $this->ServerMethod('/getChat?chat_id=' . $Chat, false);
     if($temp === null):
       return null;
     else:
