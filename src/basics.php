@@ -1,5 +1,5 @@
 <?php
-//2021.09.21.02
+//2021.09.22.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -45,6 +45,7 @@ class TblBasics{
       $this->ErrorStr = $temp['description'];
       return null;
     else:
+      $this->ErrorStr = $temp['description'] ?? null;
       return $temp['result'];
     endif;
   }
@@ -293,7 +294,7 @@ class TblBasics{
       TblError::CurlError => 'cURL error. See the logs.'
     ];
     if($this->Error === TblError::None):
-      return null;
+      return [TblError::None, $this->ErrorStr];
     elseif($this->Error === TblError::Custom):
       return [TblError::Custom, $this->ErrorStr];
     else:
