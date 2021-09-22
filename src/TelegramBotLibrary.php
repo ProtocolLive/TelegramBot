@@ -1,5 +1,5 @@
 <?php
-//2021.09.19.00
+//2021.09.22.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -59,8 +59,8 @@ class TelegramBotLibrary extends TblBasics{
   }
 
   public function CmdGet(
-    string $Language = null,
     string $Scope = null,
+    string $Language = null,
     int $ScopeChat = null,
     int $ScopeMember = null
   ):?array{
@@ -88,8 +88,8 @@ class TelegramBotLibrary extends TblBasics{
 
   public function CmdSet(
     array $Cmds,
-    string $Language = null,
     string $Scope = null,
+    string $Language = null,
     int $ScopeChat = null,
     int $ScopeMember = null
   ){
