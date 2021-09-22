@@ -1,5 +1,5 @@
 <?php
-//2021.09.22.01
+//2021.09.22.02
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -64,10 +64,10 @@ class TelegramBotLibrary extends TblBasics{
     int $ScopeChat = null,
     int $ScopeMember = null
   ):?array{
-    if($Language !== null):
+    if(empty($Language) === false):
       $Params['language_code'] = $Language;
     endif;
-    if($Scope !== null):
+    if(empty($Scope) === false):
       $array = ['type' => $Scope];
       if($Scope === TblScope::User
       or $Scope === TblScope::Admins
@@ -94,10 +94,10 @@ class TelegramBotLibrary extends TblBasics{
     int $ScopeMember = null
   ){
     $Params['commands'] = json_encode($Cmds);
-    if($Language !== null):
+    if(empty($Language) === false):
       $Params['language_code'] = $Language;
     endif;
-    if($Scope !== null):
+    if(empty($Scope) === false):
       $array = ['type' => $Scope];
       if($Scope === TblScope::User
       or $Scope === TblScope::Admins
@@ -118,10 +118,10 @@ class TelegramBotLibrary extends TblBasics{
     int $ScopeChat = null,
     int $ScopeMember = null
   ){
-    if($Language !== null):
+    if(empty($Language) === false):
       $Params['language_code'] = $Language;
     endif;
-    if($Scope !== null):
+    if(empty($Scope) === false):
       $array = ['type' => $Scope];
       if($Scope === TblScope::User
       or $Scope === TblScope::Admins
