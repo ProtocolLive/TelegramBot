@@ -1,7 +1,7 @@
 219a35d7ac1377e2e9a79034acc35990c40ed485  src/TelegramBotLibrary.php
 6f464a510f3a5cf18f433d02359be691545e5bf9  src/basics.php
 76369687a0726109ac216d09f4c14db2d91cff46  src/cacert.pem
-7d2df6009eb1cae5e4e751afa883547a9347492f  src/constants.php
+a4a4cd4c9a8e1e90d25b458a7e830a30926e848a  src/constants.php
 d9d82518ed2a7959c33dd4a508ea7ed9d2516603  src/objects/callback.php
 ebb6b60e6ab85f3005fc0d0331395e4923378f32  src/objects/chat.php
 9a4cfc165559fdcc519fecec6e58a3a91ab51f80  src/objects/cmd.php

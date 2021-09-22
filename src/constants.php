@@ -1,5 +1,5 @@
 <?php
-//2021.09.21.00
+//2021.09.22.00
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -78,9 +78,10 @@ abstract class TblParse{
   public const Html = 'HTML';
 }
 
+//https://core.telegram.org/bots/api#botcommandscope
 abstract class TblScope{
   public const Default = 'default';
-  public const Private_All = 'all_private_chats';
+  public const User_All = 'all_private_chats';
   public const Group_All = 'all_group_chats';
   public const Admins_All = 'all_chat_administrators';
   public const User = 'chat';
