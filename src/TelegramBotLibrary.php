@@ -1,5 +1,5 @@
 <?php
-//2021.09.22.00
+//2021.09.22.01
 //Protocol Corporation Ltda.
 //https://github.com/ProtocolLive/TelegramBotLibrary
 
@@ -80,9 +80,9 @@ class TelegramBotLibrary extends TblBasics{
       $Params['scope'] = json_encode($array);
     endif;
     if(isset($Params)):
-      return $this->ServerMethod('/getMyCommands?' . http_build_query($Params));
+      return $this->ServerMethod('/getMyCommands?' . http_build_query($Params), false);
     else:
-      return $this->ServerMethod('/getMyCommands');
+      return $this->ServerMethod('/getMyCommands', false);
     endif;
   }
 
